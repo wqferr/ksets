@@ -1,7 +1,7 @@
 
     Java implementation for Freeman K-set models
-    Copyright (C) 2014  Denis Renato de Moraes Piazentin
-    E-mail for contact: denis at piazentin.com
+    Copyright (C) 2017  Denis Renato de Moraes Piazentin, William Quelho Ferreira
+    E-mail for contact: denis at piazentin.com, wqferr at gmail.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
     with this program; if not, write to the Free Software Foundation, Inc.,
     51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-    Java K-sets version 1.0, Copyright (C) 2014 Denis Renato de Moraes Piazentin
+    Java K-sets version 1.0, Copyright (C) 2017 Denis Renato de Moraes Piazentin, William Quelho Ferreira
     Java K-sets comes with ABSOLUTELY NO WARRANTY;
 
 ----------------------------------------------------------------------------------------

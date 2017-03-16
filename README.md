@@ -20,6 +20,7 @@
     Java K-sets version 1.0, Copyright (C) 2017 Denis Renato de Moraes Piazentin, William Quelho Ferreira
     Java K-sets comes with ABSOLUTELY NO WARRANTY;
 
+----------------------------------------------------------------------------------------
 
 This work is based on
 [D. R. M. Piazentin's work](https://github.com/denisrmp/ksets),
