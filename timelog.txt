@@ -1,0 +1,4 @@
+20/03       1h,         installing and compiling
+21/03       40min       test dataset creation
+22/03       1h          more testing and dataset meddling (still not working)
+23/03       4h          still trying, now creating randomized datasets
