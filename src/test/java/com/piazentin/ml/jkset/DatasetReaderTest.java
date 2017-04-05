@@ -1,19 +1,25 @@
 package com.piazentin.ml.jkset;
 
-import java.io.File;
 import java.io.IOException;
 
 import jkset.Dataset;
+import jkset.KIII;
 
 public class DatasetReaderTest {
 
 	public static void main(String[] args) {
-		File f = new File("test.csv");
 		try {
-			double[][] data = Dataset.read(f);
-			for (int i = 0; i < data.length; i++) {
-				for (int j = 0; j < data[i].length; j++)
-					System.out.print(data[i][j] + ", ");
+			KIII kset = new KIII(3, 1, 1);
+			kset.switchLayerTraining(new boolean[] {true, false, false});
+			kset.setOutputLayer(0);
+			kset.initialize();
+			kset.train(Dataset.read("test.csv"));
+			
+			double[][] out = kset.run(Dataset.read("run.csv"));
+			
+			for (int i = 0; i < out.length; i++) {
+				for (int j = 0; j < out[i].length; j++)
+					System.out.print(out[i][j] + ", ");
 				System.out.println();
 			}
 		} catch (IOException e) {
