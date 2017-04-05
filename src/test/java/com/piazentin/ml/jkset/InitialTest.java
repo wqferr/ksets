@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+import jkset.KIII;
+
 public class InitialTest {
 	
 	private static final int N_ELEMENTS_PER_CLASS = 50;

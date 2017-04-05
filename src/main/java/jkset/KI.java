@@ -1,4 +1,4 @@
-package com.piazentin.ml.jkset;
+package jkset;
 
 public class KI implements Kset {
 	

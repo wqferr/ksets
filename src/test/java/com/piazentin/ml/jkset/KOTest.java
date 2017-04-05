@@ -1,11 +1,11 @@
 package com.piazentin.ml.jkset;
 
 import static org.junit.Assert.*;
-import com.piazentin.ml.jkset.Config;
-import com.piazentin.ml.jkset.KO;
-
 
 import org.junit.Test;
+
+import jkset.Config;
+import jkset.KO;
 
 public class KOTest {
 

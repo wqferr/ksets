@@ -1,4 +1,4 @@
-package com.piazentin.ml.jkset;
+package jkset;
 
 import java.io.Serializable;
 import java.util.ArrayList;

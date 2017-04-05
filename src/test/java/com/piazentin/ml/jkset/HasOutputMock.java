@@ -1,6 +1,6 @@
 package com.piazentin.ml.jkset;
 
-import com.piazentin.ml.jkset.HasOutput;
+import jkset.HasOutput;
 
 public class HasOutputMock implements HasOutput {
 	public double output;

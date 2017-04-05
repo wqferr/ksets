@@ -1,10 +1,10 @@
 package com.piazentin.ml.jkset;
 
 import static org.junit.Assert.*;
-import com.piazentin.ml.jkset.Config;
-
 
 import org.junit.Test;
+
+import jkset.Config;
 
 public class ConfigurationTest {
 
