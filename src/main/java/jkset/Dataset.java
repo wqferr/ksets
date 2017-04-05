@@ -20,6 +20,9 @@ public abstract class Dataset {
 			List<Double> lineNum = new LinkedList<Double>();
 			
 			while ((line = reader.readLine()) != null) {
+				if (line.isEmpty())
+					continue;
+				
 				StringTokenizer lineTok = new StringTokenizer(line, ",");
 				lineNum.clear();
 				
