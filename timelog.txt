@@ -4,5 +4,7 @@
 23/03       4h          still trying, now creating randomized datasets
 29/03       1h          start mockup window
 30/03       2h          finish mockup window, start text interface "mockup"
+
 03/04       1h          finish project document
 05/04       0h30        project meeting
+05/04       1h          implement csv file reading
