@@ -13,7 +13,7 @@ import java.util.StringTokenizer;
 
 public abstract class Dataset {
 	
-	public static double[][] read(InputStream in) throws IOException, NumberFormatException {
+	public static double[][] read(InputStream in) throws IOException, FileFormatException {
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
 			List<Double[]> data = new LinkedList<Double[]>();
 			String line;
@@ -26,8 +26,13 @@ public abstract class Dataset {
 				StringTokenizer lineTok = new StringTokenizer(line, ",");
 				lineNum.clear();
 				
-				while (lineTok.hasMoreTokens())
-					lineNum.add(new Double(lineTok.nextToken()));
+				while (lineTok.hasMoreTokens()) {
+					try {
+						lineNum.add(new Double(lineTok.nextToken()));
+					} catch (NumberFormatException e) {
+						throw new FileFormatException("Non-numeric value found in dataset");
+					}
+				}
 				
 				data.add(lineNum.toArray(new Double[lineNum.size()]));
 			}
@@ -49,13 +54,13 @@ public abstract class Dataset {
 		}
 	}
 	
-	public static double[][] read(File f) throws IOException {
+	public static double[][] read(File f) throws IOException, FileFormatException {
 		try (FileInputStream in = new FileInputStream(f)) {
 			return read(in);
 		}
 	}
 	
-	public static double[][] read(String fileName) throws IOException {
+	public static double[][] read(String fileName) throws IOException, FileFormatException {
 		try (FileInputStream in = new FileInputStream(fileName)) {
 			return read(in);
 		}
