@@ -121,12 +121,16 @@ public class TextInterfaceTest {
 					
 					if (data != null) {
 						data = kset.run(data);
-						for (int i = 0; i < data.length; i++) {
-							for (int j = 0; j < data[i].length; j++)
-								System.out.print(data[i][j] + " ");
-							System.out.println();
+						Dataset.write(data, System.out);
+						if (outputFileName != null) {
+							try {
+								Dataset.write(data, outputFileName);
+								System.out.printf("Saved output to %s\n", outputFileName);
+							} catch (IOException e) {
+								System.out.println("Unable to write to file");
+								break;
+							}
 						}
-						//Dataset.write(data, outputFileName);
 					}
 					break;
 			}
