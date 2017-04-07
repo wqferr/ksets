@@ -3,9 +3,12 @@ package jkset;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -63,6 +66,26 @@ public abstract class Dataset {
 	public static double[][] read(String fileName) throws IOException, FileFormatException {
 		try (FileInputStream in = new FileInputStream(fileName)) {
 			return read(in);
+		}
+	}
+	
+	public static void write(double[][] data, OutputStream out) {
+		try (PrintWriter writer = new PrintWriter(out)) {
+			for (int i = 0; i < data.length; i++)
+				for (int j = 0; j < data[i].length; j++)
+					writer.printf("%f%c", data[i][j], (j == data[i].length - 1) ? '\n' : ',');
+		}
+	}
+	
+	public static void write(double[][] data, File f) throws IOException {
+		try (FileOutputStream out = new FileOutputStream(f)) {
+			write(data, out);
+		}
+	}
+	
+	public static void write(double[][] data, String fileName) throws IOException {
+		try (FileOutputStream out = new FileOutputStream(fileName)) {
+			write(data, out);
 		}
 	}
 	
