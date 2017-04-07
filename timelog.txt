@@ -8,3 +8,5 @@
 03/04       1h          finish project document
 05/04       0h30        project meeting
 05/04       1h          implement csv file reading
+07/04       1h30        implement basic text interface
+            0h30        start real text interface implementation
