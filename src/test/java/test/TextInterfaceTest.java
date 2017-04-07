@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
-import jkset.Dataset;
+import jkset.DataIO;
 import jkset.FileFormatException;
 import jkset.KIII;
 
@@ -13,6 +13,7 @@ public class TextInterfaceTest {
 
 	public static void main(String[] args) {
 		String line;
+		@SuppressWarnings("resource")
 		Scanner in = new Scanner(System.in);
 		KIII kset = null;
 		
@@ -85,7 +86,7 @@ public class TextInterfaceTest {
 					String fileName = tok.nextToken();
 					double[][] data = null;
 					try {
-						data = Dataset.read(fileName);
+						data = DataIO.read(fileName);
 					} catch (IOException e) {
 						System.out.println("Unable to read file");
 					} catch (FileFormatException e) {
@@ -112,7 +113,7 @@ public class TextInterfaceTest {
 					data = null;
 					
 					try {
-						data = Dataset.read(fileName);
+						data = DataIO.read(fileName);
 					} catch (IOException e) {
 						System.out.println("Unable to read file");
 					} catch (FileFormatException e) {
@@ -121,10 +122,10 @@ public class TextInterfaceTest {
 					
 					if (data != null) {
 						data = kset.run(data);
-						Dataset.write(data, System.out);
+						DataIO.write(data, System.out);
 						if (outputFileName != null) {
 							try {
-								Dataset.write(data, outputFileName);
+								DataIO.write(data, outputFileName);
 								System.out.printf("Saved output to %s\n", outputFileName);
 							} catch (IOException e) {
 								System.out.println("Unable to write to file");

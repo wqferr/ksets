@@ -2,7 +2,7 @@ package test;
 
 import java.io.IOException;
 
-import jkset.Dataset;
+import jkset.DataIO;
 import jkset.KIII;
 
 public class DatasetReaderTest {
@@ -13,9 +13,9 @@ public class DatasetReaderTest {
 			kset.switchLayerTraining(new boolean[] {true, false, false});
 			kset.setOutputLayer(0);
 			kset.initialize();
-			kset.train(Dataset.read("test.csv"));
+			kset.train(DataIO.read("test.csv"));
 			
-			double[][] out = kset.run(Dataset.read("run.csv"));
+			double[][] out = kset.run(DataIO.read("run.csv"));
 			
 			for (int i = 0; i < out.length; i++) {
 				for (int j = 0; j < out[i].length; j++)

@@ -8,6 +8,8 @@ import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.function.Predicate;
 
+import jkset.DataIO;
+import jkset.FileFormatException;
 import jkset.KIII;
 
 public class TextInterpreter implements Predicate<String> {
@@ -60,48 +62,14 @@ public class TextInterpreter implements Predicate<String> {
 	public final Command NEW_NETWORK =  new Command("new", this::newNetwork);
 	public final Command SAVE_NETWORK = new Command("save", this::saveNetwork);
 	public final Command LOAD_NETWORK = new Command("load", this::loadNetwork);
+	
+	@Deprecated
 	public final Command VIEW_NETWORK = new Command("show", this::showNetwork);
-	
-	private boolean newNetwork(String[] args) {
-		try {
-			kset = new KIII(
-				Integer.parseInt(args[0]),
-				Integer.parseInt(args[1]),
-				Integer.parseInt(args[2])
-			);
-			return true;
-		} catch (ArrayIndexOutOfBoundsException e) {
-			return false;
-		}
-	}
-	
-	private boolean saveNetwork(String[] args) {
-		if (kset == null)
-			return false;
-			
-		try {
-			kset.save(args[0]);
-		} catch (IOException | ArrayIndexOutOfBoundsException e) {
-			return false;
-		}
-		
-		return true;
-	}
-	
-	private boolean loadNetwork(String[] args) {
-		try {
-			kset = KIII.load(args[0]);
-			return true;
-		} catch (IOException | ArrayIndexOutOfBoundsException |ClassNotFoundException e) {
-			return false;
-		}
-	}
-	
-	private boolean showNetwork(String[] args) {
-		System.out.printf("%d %d %d", kset.k3[0].getSize(), kset.k3[1].getSize(), kset.k3[2].getSize());
-		return true;
-	}
 
+	public final Command SET_LAYER_TRAINING = new Command("layertrain", this::setLayerTraining);
+	public final Command TRAIN_NETWORK = new Command("train", this::train);
+	public final Command RUN_NETWORK = new Command("run", this::run);
+	
 	@Override
 	public boolean test(String line) throws NoSuchElementException {
 		StringTokenizer tok = new StringTokenizer(line, " ");
@@ -119,5 +87,100 @@ public class TextInterpreter implements Predicate<String> {
 	public boolean execute(String line) throws NoSuchElementException {
 		return test(line);
 	}
+	
+	
+	
+	
+	
+	private boolean newNetwork(String[] args) {
+		try {
+			kset = new KIII(
+				Integer.parseInt(args[0]),
+				Integer.parseInt(args[1]),
+				Integer.parseInt(args[2])
+			);
+			return true;
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return false;
+		}
+	}
+	
+	private boolean saveNetwork(String[] args) {
+		if (kset == null || args.length == 0)
+			return false;
+			
+		try {
+			kset.save(args[0]);
+		} catch (IOException e) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	private boolean loadNetwork(String[] args) {
+		if (args.length == 0)
+			return false;
+		try {
+			kset = KIII.load(args[0]);
+			return true;
+		} catch (IOException | ClassNotFoundException e) {
+			return false;
+		}
+	}
+	
+	@Deprecated
+	private boolean showNetwork(String[] args) {
+		System.out.printf("%d %d %d", kset.k3[0].getSize(), kset.k3[1].getSize(), kset.k3[2].getSize());
+		return true;
+	}
 
+	private boolean setLayerTraining(String[] args) {
+		if (kset == null || args.length < kset.k3.length)
+			return false;
+		
+		boolean[] bools = new boolean[args.length];
+		for (int i = 0; i < args.length; i++)
+			bools[i] = Boolean.parseBoolean(args[i]);
+		
+		kset.switchLayerTraining(bools);
+		return true;
+	}
+	
+	private boolean train(String[] args) {
+		if (kset == null || args.length == 0)
+			return false;
+		
+		double[][] data = null;
+		try {
+			data = DataIO.read(args[0]);
+		} catch (FileFormatException | IOException e) {
+			return false;
+		}
+		
+		kset.train(data);
+		return true;
+	}
+	
+	private boolean run(String[] args) {
+		if (kset == null || args.length < 2)
+			return false;
+		
+		double[][] data = null;
+		try {
+			data = DataIO.read(args[0]);
+		} catch (FileFormatException | IOException e) {
+			return false;
+		}
+		
+		data = kset.run(data);
+		try {
+			DataIO.write(data, args[1]);
+		} catch (IOException e) {
+			return false;
+		}
+		
+		return true;
+	}
+	
 }

@@ -14,7 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public abstract class Dataset {
+public abstract class DataIO {
 	
 	public static double[][] read(InputStream in) throws IOException, FileFormatException {
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
