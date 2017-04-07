@@ -1,4 +1,4 @@
-package com.piazentin.ml.jkset;
+package test;
 
 import java.io.IOException;
 
