@@ -1,31 +1,36 @@
 package ui.text;
 
+import java.io.IOException;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
-import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import jkset.KIII;
 
-public class TextInterpreter implements Consumer<String> {
+public class TextInterpreter implements Predicate<String> {
 	
-	public class Command implements Consumer<String[]> {
+	public class Command implements Predicate<String[]> {
 		
 		private final String name;
-		private final Consumer<String[]> action;
+		private final Predicate<String[]> action;
 		
-		private Command(String name, Consumer<String[]> action) {
+		private Command(String name, Predicate<String[]> action) {
 			this.name = name;
 			this.action = action;
 			
 			TextInterpreter.this.commands.put(name, this);
 		}
 		
+		public boolean execute(String[] args) {
+			return this.test(args);
+		}
+		
 		@Override
-		public void accept(String[] args) {
-			this.action.accept(args);
+		public boolean test(String[] args) {
+			return this.action.test(args);
 		}
 		
 		@Override
@@ -52,29 +57,67 @@ public class TextInterpreter implements Consumer<String> {
 	private KIII kset = null;
 	private final Hashtable<String, Command> commands = new Hashtable<>(); 
 
-	public final Command NEW_NETWORK = new Command("new", this::newNetwork);
+	public final Command NEW_NETWORK =  new Command("new", this::newNetwork);
 	public final Command SAVE_NETWORK = new Command("save", this::saveNetwork);
+	public final Command LOAD_NETWORK = new Command("load", this::loadNetwork);
+	public final Command VIEW_NETWORK = new Command("show", this::showNetwork);
 	
-	private void newNetwork(String[] args) {
-		System.out.println("New network with layers " + args[0] + " " + args[1] + " " + args[2]);
+	private boolean newNetwork(String[] args) {
+		try {
+			kset = new KIII(
+				Integer.parseInt(args[0]),
+				Integer.parseInt(args[1]),
+				Integer.parseInt(args[2])
+			);
+			return true;
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return false;
+		}
 	}
 	
-	private void saveNetwork(String[] args) {
-		System.out.println("Save network to " + args[0]);
+	private boolean saveNetwork(String[] args) {
+		if (kset == null)
+			return false;
+			
+		try {
+			kset.save(args[0]);
+		} catch (IOException | ArrayIndexOutOfBoundsException e) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	private boolean loadNetwork(String[] args) {
+		try {
+			kset = KIII.load(args[0]);
+			return true;
+		} catch (IOException | ArrayIndexOutOfBoundsException |ClassNotFoundException e) {
+			return false;
+		}
+	}
+	
+	private boolean showNetwork(String[] args) {
+		System.out.printf("%d %d %d", kset.k3[0].getSize(), kset.k3[1].getSize(), kset.k3[2].getSize());
+		return true;
 	}
 
 	@Override
-	public void accept(String line) throws NoSuchElementException {
+	public boolean test(String line) throws NoSuchElementException {
 		StringTokenizer tok = new StringTokenizer(line, " ");
 		String cmdStr = tok.nextToken();
 		List<String> args = new LinkedList<>();
 		while (tok.hasMoreTokens())
 			args.add(tok.nextToken());
 		Command cmd = commands.getOrDefault(cmdStr, null);
-		if (cmd == null) {
+		if (cmd == null)
 			throw new NoSuchElementException("No such command");
-		}
-		cmd.accept(args.toArray(new String[] {}));
+		
+		return cmd.execute(args.toArray(new String[] {}));
+	}
+
+	public boolean execute(String line) throws NoSuchElementException {
+		return test(line);
 	}
 
 }
