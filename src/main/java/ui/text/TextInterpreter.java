@@ -74,12 +74,12 @@ public class TextInterpreter {
 			args.add(tok.nextToken());
 		Command cmd = commands.getOrDefault(cmdStr, null);
 		if (cmd == null)
-			throw new NoSuchElementException("No such command");
+			throw new NoSuchElementException(cmdStr);
 		
 		cmd.execute(args.toArray(new String[] {}));
 	}
 	
-	public void execute(Command cmd, String[] args) {
+	public void execute(Command cmd, String[] args) throws IllegalArgumentException {
 		cmd.execute(args);
 	}
 	

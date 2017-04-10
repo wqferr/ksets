@@ -12,3 +12,5 @@
             0h30        start real text interface implementation
             1h          implement more functions for text interface
 10/04       30min       restructure functions to allow exception handling
+            15min       implement loop to read from stdin and feed to text
+                        interpreter
