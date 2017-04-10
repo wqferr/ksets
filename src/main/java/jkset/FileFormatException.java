@@ -1,6 +1,8 @@
 package jkset;
 
-public class FileFormatException extends RuntimeException {
+import java.io.IOException;
+
+public class FileFormatException extends IOException {
 
 	private static final long serialVersionUID = 5748808952818144410L;
 

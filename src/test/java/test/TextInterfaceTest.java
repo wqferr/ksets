@@ -6,7 +6,6 @@ import java.util.Scanner;
 import java.util.StringTokenizer;
 
 import jkset.DataIO;
-import jkset.FileFormatException;
 import jkset.KIII;
 
 public class TextInterfaceTest {
@@ -89,8 +88,6 @@ public class TextInterfaceTest {
 						data = DataIO.read(fileName);
 					} catch (IOException e) {
 						System.out.println("Unable to read file");
-					} catch (FileFormatException e) {
-						System.out.println("Invalid file format");
 					}
 					
 					if (data != null) {
@@ -116,8 +113,6 @@ public class TextInterfaceTest {
 						data = DataIO.read(fileName);
 					} catch (IOException e) {
 						System.out.println("Unable to read file");
-					} catch (FileFormatException e) {
-						System.out.println("Invalid file format");
 					}
 					
 					if (data != null) {

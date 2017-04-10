@@ -11,3 +11,4 @@
 07/04       1h30        implement basic text interface
             0h30        start real text interface implementation
             1h          implement more functions for text interface
+10/04       30min       restructure functions to allow exception handling
