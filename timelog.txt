@@ -14,3 +14,4 @@
 10/04       30min       restructure functions to allow exception handling
             15min       implement loop to read from stdin and feed to text
                         interpreter
+15/04       15min       add other parameters for network

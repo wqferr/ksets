@@ -62,9 +62,11 @@ public class TextInterpreter {
 	@Deprecated
 	public final Command VIEW_NETWORK = new Command("show", this::showNetwork);
 
-	public final Command SET_LAYER_TRAINING = new Command("layertrain", this::setLayerTraining);
 	public final Command TRAIN_NETWORK = new Command("train", this::train);
 	public final Command RUN_NETWORK = new Command("run", this::run);
+	
+	
+	public final Command SET_PARAM = new Command("set", this::setParam);
 	
 	public void execute(String line) throws NoSuchElementException, IllegalArgumentException {
 		StringTokenizer tok = new StringTokenizer(line, " ");
@@ -96,7 +98,7 @@ public class TextInterpreter {
 			);
 			return null;
 		} catch (ArrayIndexOutOfBoundsException e) {
-			return e;
+			return new NoSuchElementException("Must provide sizes for all 3 layers of the kset");
 		}
 	}
 	
@@ -127,32 +129,74 @@ public class TextInterpreter {
 		}
 	}
 	
-	@Deprecated
-	private Exception showNetwork(String[] args) {
-		System.out.printf("%d %d %d", kset.k3[0].getSize(), kset.k3[1].getSize(), kset.k3[2].getSize());
-		return null;
-	}
-
-	private Exception setLayerTraining(String[] args) {
-		if (kset == null)
-			return new IllegalStateException("No kset loaded");
+	private Exception setParam(String[] args) {
+		if (args.length == 0) {
+			return new NoSuchElementException("Must specify a parameter to set");
+		}
 		
-		if (args.length < kset.k3.length)
-			return new NoSuchElementException(
-				String.format(
-					"Must specify %d boolean values", kset.k3.length
-				)
-			);
-		
-		boolean[] bools = new boolean[args.length];
-		for (int i = 0; i < args.length; i++)
-			bools[i] = Boolean.parseBoolean(args[i]);
-		
-		kset.switchLayerTraining(bools);
+		switch (args[0]) {
+			case "layer_training":
+				if (kset == null)
+					return new IllegalStateException("No kset loaded");
+				
+				if (args.length <= kset.k3.length)
+					return new NoSuchElementException(
+						String.format(
+							"Must specify %d boolean values", kset.k3.length
+						)
+					);
+				
+				boolean[] bools = new boolean[args.length];
+				for (int i = 1; i < args.length; i++)
+					bools[i-1] = Boolean.parseBoolean(args[i]);
+				
+				kset.switchLayerTraining(bools);
+				break;
+				
+			case "learning_rate":
+				if (kset == null)
+					return new IllegalStateException("No kset loaded");
+				
+				if (args.length <= 2)
+					return new NoSuchElementException("Must specify the layer to set and the new learning rate value");
+				
+				int layer;
+				double alpha;
+				try {
+					layer = Integer.parseInt(args[1]);
+					alpha = Double.parseDouble(args[2]);
+				} catch (NumberFormatException e) {
+					return e;
+				}
+				
+				kset.setLearningRate(layer, alpha);
+				break;
+			
+			case "detect_instability":
+				if (kset == null)
+					return new IllegalStateException("No kset loaded");
+				
+				if (args.length <= 1)
+					return new NoSuchElementException("Must specify boolean value");
+				
+				kset.setDetectInstability(Boolean.parseBoolean(args[1]));
+				break;
+				
+			default:
+				return new NoSuchElementException(
+					String.format("No parameter by name %s", args[0])
+				);
+		}
 		
 		return null;
 	}
 	
+	@Deprecated
+	private Exception showNetwork(String[] args) {
+		System.out.printf("%d %d %d\n", kset.k3[0].getSize(), kset.k3[1].getSize(), kset.k3[2].getSize());
+		return null;
+	}
+
 	private Exception train(String[] args) {
 		if (kset == null)
 			return new IllegalStateException("No kset loaded");
