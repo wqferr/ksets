@@ -145,10 +145,10 @@ public class TextInterpreter {
 						)
 					);
 				
-				boolean[] bools = new boolean[args.length];
+				boolean[] bools = new boolean[kset.k3.length];
 				for (int i = 1; i < args.length; i++)
 					bools[i-1] = Boolean.parseBoolean(args[i]);
-				
+
 				kset.switchLayerTraining(bools);
 				break;
 				
