@@ -193,6 +193,9 @@ public class TextInterpreter {
 	
 	@Deprecated
 	private Exception showNetwork(String[] args) {
+		if (kset == null)
+			return new IllegalStateException("No kset loaded");
+
 		System.out.printf("%d %d %d\n", kset.k3[0].getSize(), kset.k3[1].getSize(), kset.k3[2].getSize());
 		return null;
 	}
