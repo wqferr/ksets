@@ -15,3 +15,4 @@
             15min       implement loop to read from stdin and feed to text
                         interpreter
 15/04       15min       add other parameters for network
+26/04       15min       add another settable parameter
