@@ -59,7 +59,8 @@ public class TextInterpreter {
 	public final Command SAVE_NETWORK = new Command("save", this::saveNetwork);
 	public final Command LOAD_NETWORK = new Command("load", this::loadNetwork);
 	
-	public final Command VIEW_NETWORK = new Command("show", this::showNetwork);
+	public final Command VIEW_NETWORK = new Command("disp_network", this::showNetwork);
+	public final Command VIEW_DATASET = new Command("disp_dataset", this::showDataset);
 
 	public final Command TRAIN_NETWORK = new Command("train", this::train);
 	public final Command RUN_NETWORK = new Command("run", this::run);
@@ -232,6 +233,23 @@ public class TextInterpreter {
 		return null;
 	}
 
+	private Exception showDataset(String[] args) {
+		if (args.length == 0)
+			return new NoSuchElementException("No dataset file name given");
+		
+		double[][] data = null;
+		try {
+			data = DataIO.read(args[0]);
+		} catch (IOException e) {
+			return e;
+		}
+		
+		System.out.printf("%d rows of %d columns each\n", data.length, data[0].length);
+		DataIO.write(data, System.out);
+		
+		return null;
+	}
+	
 	private Exception train(String[] args) {
 		if (kset == null)
 			return new IllegalStateException("No kset loaded");
