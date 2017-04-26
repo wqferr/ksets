@@ -182,6 +182,26 @@ public class TextInterpreter {
 				kset.setDetectInstability(Boolean.parseBoolean(args[1]));
 				break;
 				
+			case "output_layer":
+				if (kset == null)
+					return new IllegalStateException("No kset loaded");
+				if (args.length <= 1)
+					return new NoSuchElementException("Must specify layer");
+				int l = 0;
+				
+				try {
+					l = Integer.parseInt(args[1]);
+				} catch (NumberFormatException e) {
+					return new NumberFormatException("\"" + args[1] + "\" is not a valid integer");
+				}
+				
+				if (l < 0 || l >= kset.k3.length)
+					return new IndexOutOfBoundsException(
+						String.format("Layer number must be between 0 and %d", kset.k3.length-1)
+					);
+				kset.setOutputLayer(l);
+				break;
+				
 			default:
 				return new NoSuchElementException(
 					String.format("No parameter by name %s", args[0])
