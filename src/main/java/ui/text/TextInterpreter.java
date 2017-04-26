@@ -59,7 +59,6 @@ public class TextInterpreter {
 	public final Command SAVE_NETWORK = new Command("save", this::saveNetwork);
 	public final Command LOAD_NETWORK = new Command("load", this::loadNetwork);
 	
-	@Deprecated
 	public final Command VIEW_NETWORK = new Command("show", this::showNetwork);
 
 	public final Command TRAIN_NETWORK = new Command("train", this::train);
@@ -130,9 +129,8 @@ public class TextInterpreter {
 	}
 	
 	private Exception setParam(String[] args) {
-		if (args.length == 0) {
+		if (args.length == 0)
 			return new NoSuchElementException("Must specify a parameter to set");
-		}
 		
 		switch (args[0]) {
 			case "layer_training":
@@ -211,12 +209,26 @@ public class TextInterpreter {
 		return null;
 	}
 	
-	@Deprecated
 	private Exception showNetwork(String[] args) {
 		if (kset == null)
 			return new IllegalStateException("No kset loaded");
 
-		System.out.printf("%d %d %d\n", kset.k3[0].getSize(), kset.k3[1].getSize(), kset.k3[2].getSize());
+		for (int i = 0; i < kset.k3.length; i++) {
+			System.out.printf("Layer %d:%s\n\tLayerID: %d\n\tLength: %d\n",
+				i,
+				i == kset.getOutputLayer() ? " [OUTPUT LAYER]" : "",
+				kset.k3[i].getId(),
+				kset.k3[i].getSize()
+			);
+			System.out.printf("\tLearning rate: %f\n", kset.k3[i].getLearningRate());
+			
+			System.out.print("\tWeights:\n");
+			double[] w = kset.k3[i].getWeights();
+			for (int j = 0; j < w.length; j++)
+				System.out.printf("\t\t%d\t%f\n", j, w[j]);
+			
+			System.out.println("===========");
+		}
 		return null;
 	}
 
