@@ -17,3 +17,5 @@
 15/04       15min       add other parameters for network
 26/04       15min       add another settable parameter
             30min       add functionality to display a dataset
+            1h          start gui
+            30min       finish basic layout
