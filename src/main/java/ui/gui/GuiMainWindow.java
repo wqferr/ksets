@@ -31,6 +31,7 @@ public class GuiMainWindow {
 	private JTextField txtDataset;
 	private JTextField txtOutput;
 	
+	private JTextField[] txtParamEdit;
 	private JTextField[] txtCreateNetworkLayers;
 
 	public static void main(String[] args) {
@@ -149,6 +150,32 @@ public class GuiMainWindow {
 			}
 		);
 		mnFile.add(mntmLoad);
+		
+		JMenu mnEdit = new JMenu("Edit");
+		menuBar.add(mnEdit);
+		
+		JMenuItem mntmSetParam = new JMenuItem("Set parameter");
+		mntmSetParam.addActionListener(
+			ev -> {
+				if (checkKsetLoaded()) {
+					boolean done = false;
+					do {
+						String args = showEditParamDialog();
+						if (args != null) {
+							StringBuilder bld = new StringBuilder(cmd.SET_PARAM.toString()).append(' ');
+							bld.append(args);
+							try {
+								cmd.execute(bld.toString());
+								done = true;
+							} catch (IllegalArgumentException ex) {
+								showMessage("Error", ex.getMessage());
+							}
+						}
+					} while (!done);
+				}
+			}
+		);
+		mnEdit.add(mntmSetParam);
 		
 		JMenu mnView = new JMenu("View");
 		menuBar.add(mnView);
@@ -297,6 +324,10 @@ public class GuiMainWindow {
 		for (int i = 0; i < txtCreateNetworkLayers.length; i++)
 			txtCreateNetworkLayers[i] = new JTextField(5);
 		
+		txtParamEdit = new JTextField[2];
+		for (int i = 0; i < txtParamEdit.length; i++)
+			txtParamEdit[i] = new JTextField(5);
+		
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 	}
@@ -316,6 +347,24 @@ public class GuiMainWindow {
 			frame, panel,
 			"Enter layer sizes", JOptionPane.OK_CANCEL_OPTION
 		);
+	}
+	
+	private String showEditParamDialog() {
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(0, 2));
+		for (int i = 0; i < txtParamEdit.length; i++)
+			txtParamEdit[i].setText("");
+		
+		panel.add(new JLabel("Parameter name:"));
+		panel.add(txtParamEdit[0]);
+		panel.add(new JLabel("Parameter value:"));
+		panel.add(txtParamEdit[1]);
+
+		if (JOptionPane.showConfirmDialog(frame, panel, "Input parameter data", JOptionPane.OK_CANCEL_OPTION)
+				== JOptionPane.OK_OPTION) {
+			return txtParamEdit[0].getText() + ' ' + txtParamEdit[1].getText();
+		}
+		return null;
 	}
 	
 	private void showNetworkDisplayDialog() {

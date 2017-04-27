@@ -24,3 +24,4 @@
             1h30        finish kset creation and other functions
             30min       add view network and null kset checks
             20min       add detailed view for each layer
+            40min       add parameter editting
