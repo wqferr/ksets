@@ -72,7 +72,7 @@ public class GuiMainWindow {
 	private void initialize() {
 		cmd = new TextInterpreter();
 		
-		frame = new JFrame();
+		frame = new JFrame("Freeman's KIII");
 		frame.setBounds(100, 100, 317, 178);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
@@ -101,13 +101,15 @@ public class GuiMainWindow {
 		JMenuItem mntmSave = new JMenuItem("Save");
 		mntmSave.addActionListener(
 			ev -> {
-				String name = getNetworkName(false);
-				if (name != null) {
-					try {
-						cmd.execute(cmd.SAVE_NETWORK, name + ".kset");
-						txtNetwork.setText(name);
-					} catch (IllegalArgumentException ex) {
-						JOptionPane.showMessageDialog(frame, "Could not save to file " + name + ".kset\n" + ex.getMessage());
+				if (checkKsetLoaded()) {
+					String name = getNetworkName(false);
+					if (name != null) {
+						try {
+							cmd.execute(cmd.SAVE_NETWORK, name + ".kset");
+							txtNetwork.setText(name);
+						} catch (IllegalArgumentException ex) {
+							JOptionPane.showMessageDialog(frame, "Could not save to file " + name + ".kset\n" + ex.getMessage());
+						}
 					}
 				}
 			}
@@ -117,13 +119,15 @@ public class GuiMainWindow {
 		JMenuItem mntmSaveAs = new JMenuItem("Save as...");
 		mntmSaveAs.addActionListener(
 			ev -> {
-				String name = getNetworkName(true);
-				if (name != null) {
-					try {
-						cmd.execute(cmd.SAVE_NETWORK, name + ".kset");
-						txtNetwork.setText(name);
-					} catch (IllegalArgumentException ex) {
-						JOptionPane.showMessageDialog(frame, "Could not save to file " + name + ".kset\n" + ex.getMessage());
+				if (checkKsetLoaded()) {
+					String name = getNetworkName(true);
+					if (name != null) {
+						try {
+							cmd.execute(cmd.SAVE_NETWORK, name + ".kset");
+							txtNetwork.setText(name);
+						} catch (IllegalArgumentException ex) {
+							JOptionPane.showMessageDialog(frame, "Could not save to file " + name + ".kset\n" + ex.getMessage());
+						}
 					}
 				}
 			}
@@ -152,7 +156,8 @@ public class GuiMainWindow {
 		JMenuItem mntmViewNetwork = new JMenuItem("Network");
 		mntmViewNetwork.addActionListener(
 			ev -> {
-				// TODO show dialog with basic information
+				if (checkKsetLoaded())
+					showNetworkDisplayDialog();
 			}
 		);
 		mnView.add(mntmViewNetwork);
@@ -228,10 +233,12 @@ public class GuiMainWindow {
 		JButton btnTrain = new JButton("Train");
 		btnTrain.addActionListener(
 			ev -> {
-				try {
-					cmd.execute(cmd.TRAIN_NETWORK, txtDataset.getText());
-				} catch (IllegalArgumentException ex) {
-					JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage());
+				if (checkKsetLoaded()) {
+					try {
+						cmd.execute(cmd.TRAIN_NETWORK, txtDataset.getText());
+					} catch (IllegalArgumentException ex) {
+						JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage());
+					}
 				}
 			}
 		);
@@ -264,10 +271,12 @@ public class GuiMainWindow {
 		JButton btnRun = new JButton("Run");
 		btnRun.addActionListener(
 			ev -> {
-				try {
-					cmd.execute(cmd.RUN_NETWORK, txtDataset.getText(), txtOutput.getText());
-				} catch (IllegalArgumentException ex) {
-					JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage());
+				if (checkKsetLoaded()) {
+					try {
+						cmd.execute(cmd.RUN_NETWORK, txtDataset.getText(), txtOutput.getText());
+					} catch (IllegalArgumentException ex) {
+						JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage());
+					}
 				}
 			}
 		);
@@ -307,5 +316,34 @@ public class GuiMainWindow {
 			frame, panel,
 			"Enter layer sizes", JOptionPane.OK_CANCEL_OPTION
 		);
+	}
+	
+	private void showNetworkDisplayDialog() {
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(0, 1));
+		
+		for (int i = 0; i < txtCreateNetworkLayers.length; i++) {
+			panel.add(
+				new JLabel(
+					String.format("Layer %d:%s", i, i == cmd.kset.getOutputLayer() ? " [OUTPUT LAYER]" : "")
+				)
+			);
+			panel.add(new JLabel("Id: " + cmd.kset.k3[i].getId()));
+			panel.add(new JLabel("Size: " + cmd.kset.k3[i].getSize()));
+			panel.add(new JLabel("Learning rate: " + cmd.kset.k3[i].getLearningRate()));
+			
+			if (i != txtCreateNetworkLayers.length-1)
+				panel.add(new JLabel(""));
+		}
+		
+		JOptionPane.showMessageDialog(frame, panel);
+	}
+	
+	private boolean checkKsetLoaded() {
+		if (cmd.kset != null)
+			return true;
+
+		JOptionPane.showMessageDialog(frame, "No kset loaded");
+		return false;
 	}
 }

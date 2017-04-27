@@ -52,7 +52,7 @@ public class TextInterpreter {
 	}
 
 	
-	private KIII kset = null;
+	public KIII kset = null;
 	private final Hashtable<String, Command> commands = new Hashtable<>(); 
 
 	public final Command NEW_NETWORK =  new Command("new", this::newNetwork);
