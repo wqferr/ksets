@@ -108,7 +108,7 @@ public class GuiMainWindow {
 							cmd.execute(cmd.SAVE_NETWORK, name + ".kset");
 							txtNetwork.setText(name);
 						} catch (IllegalArgumentException ex) {
-							JOptionPane.showMessageDialog(frame, "Could not save to file " + name + ".kset\n" + ex.getMessage());
+							showMessage("Error saving file", "Could not save to file " + name + ".kset\n" + ex.getMessage());
 						}
 					}
 				}
@@ -126,7 +126,7 @@ public class GuiMainWindow {
 							cmd.execute(cmd.SAVE_NETWORK, name + ".kset");
 							txtNetwork.setText(name);
 						} catch (IllegalArgumentException ex) {
-							JOptionPane.showMessageDialog(frame, "Could not save to file " + name + ".kset\n" + ex.getMessage());
+							showMessage("Error saving file", "Could not save to file " + name + ".kset\n" + ex.getMessage());
 						}
 					}
 				}
@@ -143,7 +143,7 @@ public class GuiMainWindow {
 						cmd.execute(cmd.LOAD_NETWORK, name + ".kset");
 						txtNetwork.setText(name);
 					} catch (IllegalArgumentException ex) {
-						JOptionPane.showMessageDialog(frame, "Could not load file " + name + ".kset\n" + ex.getMessage());
+						showMessage("Error loading file", "Could not load file " + name + ".kset\n" + ex.getMessage());
 					}
 				}
 			}
@@ -237,7 +237,7 @@ public class GuiMainWindow {
 					try {
 						cmd.execute(cmd.TRAIN_NETWORK, txtDataset.getText());
 					} catch (IllegalArgumentException ex) {
-						JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage());
+						showMessage("Error", ex.getMessage());
 					}
 				}
 			}
@@ -275,7 +275,7 @@ public class GuiMainWindow {
 					try {
 						cmd.execute(cmd.RUN_NETWORK, txtDataset.getText(), txtOutput.getText());
 					} catch (IllegalArgumentException ex) {
-						JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage());
+						showMessage("Error", ex.getMessage());
 					}
 				}
 			}
@@ -328,13 +328,34 @@ public class GuiMainWindow {
 					String.format("Layer %d:%s", i, i == cmd.kset.getOutputLayer() ? " [OUTPUT LAYER]" : "")
 				)
 			);
-			panel.add(new JLabel("Id: " + cmd.kset.k3[i].getId()));
 			panel.add(new JLabel("Size: " + cmd.kset.k3[i].getSize()));
 			panel.add(new JLabel("Learning rate: " + cmd.kset.k3[i].getLearningRate()));
+			JButton btn = new JButton("Details");
+			btn.addActionListener(
+				ev -> {
+					showLayerDetails(Integer.parseInt(ev.getActionCommand()));
+				}
+			);
+			btn.setActionCommand(String.valueOf(i));
+			
+			panel.add(btn);
 			
 			if (i != txtCreateNetworkLayers.length-1)
 				panel.add(new JLabel(""));
 		}
+		
+		JOptionPane.showMessageDialog(frame, panel);
+	}
+	
+	private void showLayerDetails(int i) {
+		JPanel panel = new JPanel(new GridLayout(0, 1));
+		panel.add(new JLabel("Id: " + cmd.kset.k3[i].getId()));
+		panel.add(new JLabel("Weights:"));
+		
+		double[] w = cmd.kset.k3[i].getWeights();
+		
+		for (int j = 0; j < cmd.kset.k3[i].getSize(); j++)
+			panel.add(new JLabel(j + String.format(": %.5f", w[j])));
 		
 		JOptionPane.showMessageDialog(frame, panel);
 	}
@@ -345,5 +366,9 @@ public class GuiMainWindow {
 
 		JOptionPane.showMessageDialog(frame, "No kset loaded");
 		return false;
+	}
+	
+	private void showMessage(String title, String message) {
+		JOptionPane.showMessageDialog(frame, message, title, JOptionPane.PLAIN_MESSAGE);
 	}
 }

@@ -19,5 +19,8 @@
             30min       add functionality to display a dataset
             1h          start gui
             30min       finish basic layout
+
+27/04
             1h30        finish kset creation and other functions
-            30min       Add view network and null kset checks
+            30min       add view network and null kset checks
+            20min       add detailed view for each layer
