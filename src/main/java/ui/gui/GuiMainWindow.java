@@ -262,6 +262,15 @@ public class GuiMainWindow {
 		txtOutput.setColumns(10);
 		
 		JButton btnRun = new JButton("Run");
+		btnRun.addActionListener(
+			ev -> {
+				try {
+					cmd.execute(cmd.RUN_NETWORK, txtDataset.getText(), txtOutput.getText());
+				} catch (IllegalArgumentException ex) {
+					JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage());
+				}
+			}
+		);
 		GridBagConstraints gbc_btnRun = new GridBagConstraints();
 		gbc_btnRun.insets = new Insets(0, 0, 5, 5);
 		gbc_btnRun.fill = GridBagConstraints.HORIZONTAL;
