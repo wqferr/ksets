@@ -17,7 +17,7 @@ public class TextUserInterface {
 				} catch (IllegalArgumentException e) {
 					System.out.printf("Error: %s\n", e.getMessage());
 				} catch (NoSuchElementException e) {
-					System.out.printf("No such command: %s\n", e.getMessage());
+					System.out.println(e.getMessage());
 				}
 			}
 		} catch (IOException e) {

@@ -8,16 +8,17 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 
 import javax.swing.Box;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import ui.text.TextInterpreter;
-import javax.swing.SwingConstants;
-import javax.swing.JButton;
 
 public class GuiMainWindow {
 
@@ -47,6 +48,19 @@ public class GuiMainWindow {
 		initialize();
 	}
 
+	
+	private String getNetworkName(boolean forcePopup) {
+		String name = "";
+		
+		if (!forcePopup)
+			name = txtNetwork.getText();
+		
+		while (name != null && name.isEmpty())
+			name = JOptionPane.showInputDialog("Enter network name");
+		
+		return name;
+	}
+	
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -64,28 +78,88 @@ public class GuiMainWindow {
 		menuBar.add(mnFile);
 		
 		JMenuItem mntmNew = new JMenuItem("New");
+		mntmNew.addActionListener(
+			ev -> {
+				// TODO create popup or new window
+			}
+		);
 		mnFile.add(mntmNew);
 		
 		JMenuItem mntmSave = new JMenuItem("Save");
+		mntmSave.addActionListener(
+			ev -> {
+				String name = getNetworkName(false);
+				if (name != null) {
+					try {
+						cmd.execute(cmd.SAVE_NETWORK, name + ".kset");
+					} catch (IllegalArgumentException ex) {
+						JOptionPane.showMessageDialog(frame, "Could not save to file " + name + ".kset");
+					}
+				}
+			}
+		);
 		mnFile.add(mntmSave);
 		
 		JMenuItem mntmSaveAs = new JMenuItem("Save as...");
+		mntmSaveAs.addActionListener(
+			ev -> {
+				String name = getNetworkName(true);
+				if (name != null) {
+					try {
+						cmd.execute(cmd.SAVE_NETWORK, name + ".kset");
+						txtNetwork.setText(name);
+					} catch (IllegalArgumentException ex) {
+						JOptionPane.showMessageDialog(frame, "Could not save to file " + name + ".kset");
+					}
+				}
+			}
+		);
 		mnFile.add(mntmSaveAs);
 		
 		JMenuItem mntmLoad = new JMenuItem("Load");
+		mntmLoad.addActionListener(
+			ev -> {
+				String name = getNetworkName(true);
+				if (name != null) {
+					try {
+						cmd.execute(cmd.LOAD_NETWORK, name + ".kset");
+						txtNetwork.setText(name);
+					} catch (IllegalArgumentException ex) {
+						JOptionPane.showMessageDialog(frame, "Could not load file " + name + ".kset");
+					}
+				}
+			}
+		);
 		mnFile.add(mntmLoad);
 		
 		JMenu mnView = new JMenu("View");
 		menuBar.add(mnView);
 		
 		JMenuItem mntmViewNetwork = new JMenuItem("Network");
+		mntmViewNetwork.addActionListener(
+			ev -> {
+				// TODO show dialog with basic information
+			}
+		);
 		mnView.add(mntmViewNetwork);
 		
 		JMenuItem mntmViewDataset = new JMenuItem("Dataset");
+		mntmViewDataset.addActionListener(
+			ev -> {
+				// TODO show dialog with dataset
+			}
+		);
 		mnView.add(mntmViewDataset);
 		
 		JMenuItem mntmHelp = new JMenuItem("Help");
+		mntmHelp.addActionListener(
+			ev -> {
+				// TODO open help window
+			}
+		);
 		menuBar.add(mntmHelp);
+		
+		
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
@@ -138,6 +212,15 @@ public class GuiMainWindow {
 		txtDataset.setColumns(10);
 		
 		JButton btnTrain = new JButton("Train");
+		btnTrain.addActionListener(
+			ev -> {
+				try {
+					cmd.execute(cmd.TRAIN_NETWORK, txtDataset.getText());
+				} catch (IllegalArgumentException ex) {
+					JOptionPane.showMessageDialog(frame, "Error: " + ex.getMessage());
+				}
+			}
+		);
 		GridBagConstraints gbc_btnTrain = new GridBagConstraints();
 		gbc_btnTrain.fill = GridBagConstraints.HORIZONTAL;
 		gbc_btnTrain.insets = new Insets(0, 0, 5, 5);

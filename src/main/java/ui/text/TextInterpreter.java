@@ -28,7 +28,7 @@ public class TextInterpreter {
 		public void execute(String[] args) throws IllegalArgumentException {
 			Exception e = this.action.apply(args);
 			if (e != null)
-				throw new IllegalArgumentException(e);
+				throw new IllegalArgumentException(e.getMessage());
 		}
 		
 		@Override
@@ -71,17 +71,19 @@ public class TextInterpreter {
 	public void execute(String line) throws NoSuchElementException, IllegalArgumentException {
 		StringTokenizer tok = new StringTokenizer(line, " ");
 		String cmdStr = tok.nextToken();
+		
+		if (!commands.containsKey(cmdStr))
+			throw new NoSuchElementException("No such command: " + cmdStr);
+		
 		List<String> args = new LinkedList<>();
 		while (tok.hasMoreTokens())
 			args.add(tok.nextToken());
-		Command cmd = commands.getOrDefault(cmdStr, null);
-		if (cmd == null)
-			throw new NoSuchElementException(cmdStr);
+		Command cmd = commands.get(cmdStr);
 		
 		cmd.execute(args.toArray(new String[] {}));
 	}
 	
-	public void execute(Command cmd, String[] args) throws IllegalArgumentException {
+	public void execute(Command cmd, String... args) throws IllegalArgumentException {
 		cmd.execute(args);
 	}
 	
