@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 
 import javax.swing.Box;
@@ -15,6 +16,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
@@ -24,9 +26,12 @@ public class GuiMainWindow {
 
 	private JFrame frame;
 	private TextInterpreter cmd;
-	private JTextField txtNetwork;
+	
+	public JTextField txtNetwork;
 	private JTextField txtDataset;
 	private JTextField txtOutput;
+	
+	private JTextField[] txtCreateNetworkLayers;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -80,7 +85,15 @@ public class GuiMainWindow {
 		JMenuItem mntmNew = new JMenuItem("New");
 		mntmNew.addActionListener(
 			ev -> {
-				// TODO create popup or new window
+				int result = showCreateNetworkDialog();
+				
+				if (result == JOptionPane.OK_OPTION) {
+					StringBuilder bld = new StringBuilder(cmd.NEW_NETWORK.toString()).append(' ');
+					for (JTextField txt : txtCreateNetworkLayers)
+						bld.append(txt.getText()).append(' ');
+					
+					cmd.execute(bld.toString());
+				}
 			}
 		);
 		mnFile.add(mntmNew);
@@ -92,8 +105,9 @@ public class GuiMainWindow {
 				if (name != null) {
 					try {
 						cmd.execute(cmd.SAVE_NETWORK, name + ".kset");
+						txtNetwork.setText(name);
 					} catch (IllegalArgumentException ex) {
-						JOptionPane.showMessageDialog(frame, "Could not save to file " + name + ".kset");
+						JOptionPane.showMessageDialog(frame, "Could not save to file " + name + ".kset\n" + ex.getMessage());
 					}
 				}
 			}
@@ -109,7 +123,7 @@ public class GuiMainWindow {
 						cmd.execute(cmd.SAVE_NETWORK, name + ".kset");
 						txtNetwork.setText(name);
 					} catch (IllegalArgumentException ex) {
-						JOptionPane.showMessageDialog(frame, "Could not save to file " + name + ".kset");
+						JOptionPane.showMessageDialog(frame, "Could not save to file " + name + ".kset\n" + ex.getMessage());
 					}
 				}
 			}
@@ -125,7 +139,7 @@ public class GuiMainWindow {
 						cmd.execute(cmd.LOAD_NETWORK, name + ".kset");
 						txtNetwork.setText(name);
 					} catch (IllegalArgumentException ex) {
-						JOptionPane.showMessageDialog(frame, "Could not load file " + name + ".kset");
+						JOptionPane.showMessageDialog(frame, "Could not load file " + name + ".kset\n" + ex.getMessage());
 					}
 				}
 			}
@@ -261,7 +275,28 @@ public class GuiMainWindow {
 		gbc_rigidArea_1.gridy = 4;
 		frame.getContentPane().add(rigidArea_1, gbc_rigidArea_1);
 		
+		txtCreateNetworkLayers = new JTextField[3];
+		for (int i = 0; i < txtCreateNetworkLayers.length; i++)
+			txtCreateNetworkLayers[i] = new JTextField(5);
+		
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
+	}
+	
+	private int showCreateNetworkDialog() {
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(0, 2));
+		
+		for (int i = 0; i < txtCreateNetworkLayers.length; i++) {
+			txtCreateNetworkLayers[i].setText("");
+			
+			panel.add(new JLabel("Layer " + i + " size:"));
+			panel.add(txtCreateNetworkLayers[i]);
+		}
+		
+		return JOptionPane.showConfirmDialog(
+			frame, panel,
+			"Enter layer sizes", JOptionPane.OK_CANCEL_OPTION
+		);
 	}
 }

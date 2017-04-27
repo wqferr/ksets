@@ -13,7 +13,7 @@ import jkset.KIII;
 
 public class TextInterpreter {
 	
-	private class Command {
+	public class Command {
 		
 		private final String name;
 		private final Function<String[], Exception> action;
