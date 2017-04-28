@@ -39,8 +39,8 @@ public class GuiMainWindow {
 	private JTextField[] txtCreateNetworkLayers;
 
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
+		EventQueue.invokeLater(
+			() -> {
 				try {
 					GuiMainWindow window = new GuiMainWindow();
 					window.frame.setVisible(true);
@@ -48,7 +48,7 @@ public class GuiMainWindow {
 					System.err.printf("Error initializing window: %s", e.getMessage());
 				}
 			}
-		});
+		);
 	}
 
 	/**
