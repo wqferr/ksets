@@ -36,7 +36,7 @@ public class ODESolver implements Serializable {
 	}
 	
 	/** 
-	 * @param B the derivative
+	 * @param y the derivative
 	 * @return the right hand side of the equation x' = y
 	 */
 	private double F(double y) {

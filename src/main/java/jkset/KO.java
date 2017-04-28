@@ -1,11 +1,11 @@
 package jkset;
 
-import static jkset.Config.getTime;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import static jkset.Config.getTime;
 
 public class KO implements Kset, Runnable, Serializable {
 
@@ -110,7 +110,7 @@ public class KO implements Kset, Runnable, Serializable {
 			double[] pt1 = Arrays.copyOfRange(activation, from, activation.length);
 			double[] pt2 = Arrays.copyOfRange(activation, 0, to);
 			double[] activations = new double[pt1.length + pt2.length];
-			
+
 			for (int i = 0; i < pt1.length; i++) {
 				activations[i] = pt1[i];
 			}

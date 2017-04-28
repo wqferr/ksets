@@ -10,5 +10,5 @@ public interface Layer extends HasOutput, Runnable, Serializable {
 	void run();
 	void setExternalStimulus(double[] stimulus);
 	double[] getWeights();
-	public double[][] getHistory() ;
+	double[][] getHistory() ;
 }

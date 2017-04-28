@@ -1,37 +1,19 @@
 package ui.gui;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Insets;
-import java.io.File;
-import java.io.IOException;
-
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
-
 import jkset.DataIO;
 import ui.text.TextInterpreter;
+
+import javax.swing.*;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 public class GuiMainWindow {
 
 	private JFrame frame;
 	private TextInterpreter cmd;
 	
-	public JTextField txtNetwork;
+	private JTextField txtNetwork;
 	private JTextField txtDataset;
 	private JTextField txtOutput;
 	
@@ -54,7 +36,7 @@ public class GuiMainWindow {
 	/**
 	 * Create the application.
 	 */
-	public GuiMainWindow() {
+	private GuiMainWindow() {
 		initialize();
 	}
 
@@ -201,7 +183,7 @@ public class GuiMainWindow {
 				
 				if (filename != null) {
 					f = new File(filename);
-					double[][] data = null;
+					double[][] data;
 					try {
 						data = DataIO.read(f);
 					} catch (IOException ex) {
@@ -399,8 +381,8 @@ public class GuiMainWindow {
 	private String showEditParamDialog() {
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(0, 2));
-		for (int i = 0; i < txtParamEdit.length; i++)
-			txtParamEdit[i].setText("");
+		for (JTextField txt : txtParamEdit)
+			txt.setText("");
 		
 		panel.add(new JLabel("Parameter name:"));
 		panel.add(txtParamEdit[0]);
@@ -416,32 +398,47 @@ public class GuiMainWindow {
 	
 	private void showNetworkDisplayDialog() {
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(0, 1));
+		panel.setLayout(new GridBagLayout());
+		GridBagConstraints g = new GridBagConstraints();
+		g.anchor = GridBagConstraints.WEST;
+		g.gridx = 0;
+		g.gridy = 0;
 		
 		for (int i = 0; i < txtCreateNetworkLayers.length; i++) {
 			panel.add(
 				new JLabel(
 					String.format("Layer %d:%s", i, i == cmd.kset.getOutputLayer() ? " [OUTPUT LAYER]" : "")
-				)
+				), g
 			);
-			panel.add(new JLabel("Size: " + cmd.kset.k3[i].getSize()));
-			panel.add(new JLabel("Learning rate: " + cmd.kset.k3[i].getLearningRate()));
-			panel.add(new JLabel(String.format("Training: %b", cmd.kset.getLayerTraining(i))));
+
+			g.gridy++;
+			panel.add(new JLabel("Size: " + cmd.kset.k3[i].getSize()), g);
+
+			g.gridy++;
+			panel.add(new JLabel("Learning rate: " + cmd.kset.k3[i].getLearningRate()), g);
+
+			g.gridy++;
+			panel.add(new JLabel(String.format("Training: %b", cmd.kset.getLayerTraining(i))), g);
+
 			JButton btn = new JButton("Details");
-			btn.addActionListener(
-				ev -> {
-					showLayerDetails(Integer.parseInt(ev.getActionCommand()));
-				}
-			);
+			btn.addActionListener(ev -> showLayerDetails(Integer.parseInt(ev.getActionCommand())));
 			btn.setActionCommand(String.valueOf(i));
+
+			g.gridy++;
+			panel.add(btn, g);
 			
-			panel.add(btn);
-			
-			if (i != txtCreateNetworkLayers.length-1)
-				panel.add(new JLabel(""));
+			if (i != txtCreateNetworkLayers.length-1) {
+				g.gridy++;
+
+				JLabel sep = new JLabel();
+				sep.setPreferredSize(new Dimension(70, 20));
+				panel.add(sep, g);
+
+				g.gridy++;
+			}
 		}
 		
-		JOptionPane.showMessageDialog(frame, panel);
+		JOptionPane.showMessageDialog(frame, panel, txtNetwork.getText(), JOptionPane.PLAIN_MESSAGE);
 	}
 	
 	private void showLayerDetails(int i) {

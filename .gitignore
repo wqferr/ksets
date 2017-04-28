@@ -2,3 +2,4 @@
 *.csv
 *.jar
 *.kset
+.idea/workspace.xml

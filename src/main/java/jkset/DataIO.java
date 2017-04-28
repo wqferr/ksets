@@ -1,14 +1,6 @@
 package jkset;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,11 +8,11 @@ import java.util.StringTokenizer;
 
 public abstract class DataIO {
 	
-	public static double[][] read(InputStream in) throws IOException, FileFormatException {
+	public static double[][] read(InputStream in) throws IOException {
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-			List<Double[]> data = new LinkedList<Double[]>();
+			List<Double[]> data = new LinkedList<>();
 			String line;
-			List<Double> lineNum = new LinkedList<Double>();
+			List<Double> lineNum = new LinkedList<>();
 			
 			while ((line = reader.readLine()) != null) {
 				if (line.isEmpty())
@@ -57,13 +49,13 @@ public abstract class DataIO {
 		}
 	}
 	
-	public static double[][] read(File f) throws IOException, FileFormatException {
+	public static double[][] read(File f) throws IOException {
 		try (FileInputStream in = new FileInputStream(f)) {
 			return read(in);
 		}
 	}
 	
-	public static double[][] read(String fileName) throws IOException, FileFormatException {
+	public static double[][] read(String fileName) throws IOException {
 		try (FileInputStream in = new FileInputStream(fileName)) {
 			return read(in);
 		}
@@ -71,9 +63,9 @@ public abstract class DataIO {
 	
 	public static void write(double[][] data, OutputStream out) {
 		try (PrintWriter writer = new PrintWriter(out)) {
-			for (int i = 0; i < data.length; i++)
-				for (int j = 0; j < data[i].length; j++)
-					writer.printf("%f%c", data[i][j], (j == data[i].length - 1) ? '\n' : ',');
+			for (double[] row : data)
+				for (int j = 0; j < row.length; j++)
+					writer.printf("%f%c", row[j], (j == row.length - 1) ? '\n' : ',');
 		}
 	}
 	

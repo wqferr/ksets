@@ -7,12 +7,12 @@ public abstract class KLayer implements Layer, Runnable, Comparable<Object>, Ser
 
 	private static final long serialVersionUID = 3531454372987398253L;
 	
-	public static enum WLat { 
+	public enum WLat {
 		USE_FIXED_WEIGHTS, 
 		USE_RANDOM_WEIGHTS 
-	};
-	
-	protected Kset[] k;
+	}
+
+    protected Kset[] k;
 	private int size;
 	private int id;
 	private boolean injectNoise;
@@ -32,8 +32,8 @@ public abstract class KLayer implements Layer, Runnable, Comparable<Object>, Ser
 	public void run(){
 		for (int i = 0; i < this.k.length; i++) {
 			k[i].run();
-		};
-	}
+		}
+    }
 	
 	
 	public void setExternalStimulus(double[] stimulus) {		

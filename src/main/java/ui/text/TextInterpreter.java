@@ -1,15 +1,11 @@
 package ui.text;
 
-import java.io.IOException;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
-import java.util.function.Function;
-
 import jkset.DataIO;
 import jkset.KIII;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.function.Function;
 
 public class TextInterpreter {
 	
@@ -43,7 +39,7 @@ public class TextInterpreter {
 		
 		@Override
 		public boolean equals(Object other) {
-			if (!(other instanceof Command) || other == null)
+			if (!(other instanceof Command))
 				return false;
 			
 			Command cmd = (Command) other;
@@ -188,7 +184,7 @@ public class TextInterpreter {
 					return new IllegalStateException("No kset loaded");
 				if (args.length <= 1)
 					return new NoSuchElementException("Must specify layer");
-				int l = 0;
+				int l;
 				
 				try {
 					l = Integer.parseInt(args[1]);
@@ -239,7 +235,7 @@ public class TextInterpreter {
 		if (args.length == 0)
 			return new NoSuchElementException("No dataset file name given");
 		
-		double[][] data = null;
+		double[][] data;
 		try {
 			data = DataIO.read(args[0]);
 		} catch (IOException e) {
@@ -259,7 +255,7 @@ public class TextInterpreter {
 		if (args.length == 0)
 			return new NoSuchElementException("No dataset file name given");
 		
-		double[][] data = null;
+		double[][] data;
 		try {
 			data = DataIO.read(args[0]);
 		} catch (IOException e) {
@@ -276,7 +272,7 @@ public class TextInterpreter {
 		if (args.length < 2)
 			return new NoSuchElementException("Must provide both an input dataset file name and an output file name");
 		
-		double[][] data = null;
+		double[][] data;
 		try {
 			data = DataIO.read(args[0]);
 		} catch (IOException e) {
