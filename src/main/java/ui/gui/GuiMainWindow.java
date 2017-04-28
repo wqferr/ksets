@@ -147,7 +147,9 @@ public class GuiMainWindow {
 					boolean done = false;
 					do {
 						String args = showEditParamDialog();
-						if (args != null) {
+						if (args == null) {
+							done = true;
+						} else {
 							StringBuilder bld = new StringBuilder(cmd.SET_PARAM.toString()).append(' ');
 							bld.append(args);
 							try {
@@ -356,7 +358,7 @@ public class GuiMainWindow {
 		txtParamEdit = new JTextField[2];
 		for (int i = 0; i < txtParamEdit.length; i++)
 			txtParamEdit[i] = new JTextField(5);
-		
+
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 	}
