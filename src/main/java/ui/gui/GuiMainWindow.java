@@ -172,7 +172,7 @@ public class GuiMainWindow {
 								cmd.execute(bld.toString());
 								done = true;
 							} catch (IllegalArgumentException ex) {
-								showMessage("Error", ex.getMessage());
+								showError(ex);
 							}
 						}
 					} while (!done);
@@ -205,7 +205,7 @@ public class GuiMainWindow {
 					try {
 						data = DataIO.read(f);
 					} catch (IOException ex) {
-						showMessage("Error", ex.getMessage());
+						showError(ex);
 						return;
 					}
 					
@@ -311,7 +311,7 @@ public class GuiMainWindow {
 					try {
 						cmd.execute(cmd.TRAIN_NETWORK, txtDataset.getText());
 					} catch (IllegalArgumentException ex) {
-						showMessage("Error", ex.getMessage());
+						showError(ex);
 					}
 				}
 			}
@@ -349,7 +349,7 @@ public class GuiMainWindow {
 					try {
 						cmd.execute(cmd.RUN_NETWORK, txtDataset.getText(), txtOutput.getText());
 					} catch (IllegalArgumentException ex) {
-						showMessage("Error", ex.getMessage());
+						showError(ex);
 					}
 				}
 			}
@@ -426,6 +426,7 @@ public class GuiMainWindow {
 			);
 			panel.add(new JLabel("Size: " + cmd.kset.k3[i].getSize()));
 			panel.add(new JLabel("Learning rate: " + cmd.kset.k3[i].getLearningRate()));
+			panel.add(new JLabel(String.format("Training: %b", cmd.kset.getLayerTraining(i))));
 			JButton btn = new JButton("Details");
 			btn.addActionListener(
 				ev -> {
@@ -451,7 +452,7 @@ public class GuiMainWindow {
 		double[] w = cmd.kset.k3[i].getWeights();
 		
 		for (int j = 0; j < cmd.kset.k3[i].getSize(); j++)
-			panel.add(new JLabel(j + String.format(": %.5f", w[j])));
+			panel.add(new JLabel(String.format("%d: %.5f", j, w[j])));
 		
 		JOptionPane.showMessageDialog(frame, panel);
 	}
@@ -466,5 +467,9 @@ public class GuiMainWindow {
 	
 	private void showMessage(String title, String message) {
 		JOptionPane.showMessageDialog(frame, message, title, JOptionPane.PLAIN_MESSAGE);
+	}
+
+	private void showError(Exception e) {
+		showMessage("Error", e.getMessage());
 	}
 }

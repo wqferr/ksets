@@ -108,6 +108,10 @@ public class KIII implements Serializable {
 	public KIILayer getLayer(int i) {
 		return k3[i];
 	}
+
+	public boolean getLayerTraining(int i) {
+		return trainLayer[i];
+	}
 	
 	public void setOutputLayer(int outputLayer) {
 		if (outputLayer < 0 || outputLayer >= k3.length) {
