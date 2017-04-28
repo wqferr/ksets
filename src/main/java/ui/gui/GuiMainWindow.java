@@ -7,6 +7,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -17,9 +19,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import jkset.DataIO;
 import ui.text.TextInterpreter;
 
 public class GuiMainWindow {
@@ -192,7 +196,50 @@ public class GuiMainWindow {
 		JMenuItem mntmViewDataset = new JMenuItem("Dataset");
 		mntmViewDataset.addActionListener(
 			ev -> {
-				// TODO show dialog with dataset
+				String filename = JOptionPane.showInputDialog(frame, "Dataset file name");
+				File f;
+				
+				if (filename != null) {
+					f = new File(filename);
+					double[][] data = null;
+					try {
+						data = DataIO.read(f);
+					} catch (IOException ex) {
+						showMessage("Error", ex.getMessage());
+						return;
+					}
+					
+					JPanel pane = new JPanel();
+					pane.setLayout(new GridBagLayout());
+					GridBagConstraints gbc = new GridBagConstraints();
+					
+					gbc.gridx = 0;
+					gbc.gridy = 0;
+					
+					JLabel lbData = new JLabel(String.format("%dx%d dataset\n", data.length, data[0].length));
+					pane.add(lbData, gbc);
+					
+					JTextArea txtData = new JTextArea();
+					txtData.setEditable(false);
+					
+					StringBuilder bld = new StringBuilder();
+					for (int i = 0; i < data.length; i++) {
+						bld.append(data[i][0]);
+						
+						for (int j = 1; j < data[i].length; j++)
+							bld.append('\t').append(data[i][j]);
+						
+						txtData.append(bld.toString());
+						if (i < data.length-1)
+							txtData.append("\n");
+						
+						bld.setLength(0);
+					}
+					gbc.gridy++;
+					pane.add(txtData, gbc);
+					
+					JOptionPane.showMessageDialog(frame, pane, filename, JOptionPane.PLAIN_MESSAGE);
+				}
 			}
 		);
 		mnView.add(mntmViewDataset);
