@@ -5,6 +5,10 @@ import ui.text.TextInterpreter;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 
@@ -19,6 +23,22 @@ public class GuiMainWindow {
 	
 	private JTextField[] txtParamEdit;
 	private JTextField[] txtCreateNetworkLayers;
+
+	// Giant workaround because of poor swing internal architecture
+	// Without this, the JOptionPane will always focus the button regardless
+	// of invokeLaters and requestFocuses
+	private static final HierarchyListener requestFocusOnShow = e -> {
+		final Component c = e.getComponent();
+		if (c.isShowing() && (e.getChangeFlags() &
+				HierarchyEvent.SHOWING_CHANGED) != 0) {
+			Window toplevel = SwingUtilities.getWindowAncestor(c);
+			toplevel.addWindowFocusListener(new WindowAdapter() {
+				public void windowGainedFocus(WindowEvent e) {
+					c.requestFocus();
+				}
+			});
+		}
+	};
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(
@@ -60,7 +80,7 @@ public class GuiMainWindow {
 		cmd = new TextInterpreter();
 		
 		frame = new JFrame("Freeman's KIII");
-		frame.setBounds(100, 100, 317, 178);
+		frame.setBounds(100, 100, 320, 180);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -354,10 +374,12 @@ public class GuiMainWindow {
 		txtCreateNetworkLayers = new JTextField[3];
 		for (int i = 0; i < txtCreateNetworkLayers.length; i++)
 			txtCreateNetworkLayers[i] = new JTextField(5);
-		
+		txtCreateNetworkLayers[0].addHierarchyListener(requestFocusOnShow);
+
 		txtParamEdit = new JTextField[2];
 		for (int i = 0; i < txtParamEdit.length; i++)
 			txtParamEdit[i] = new JTextField(5);
+		txtParamEdit[0].addHierarchyListener(requestFocusOnShow);
 
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);

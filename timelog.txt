@@ -26,3 +26,5 @@
             20min       add detailed view for each layer
             40min       add parameter editting
             30min       add dataset viewing
+
+28/04       1h          FINALLY FOCUS JTEXTFIELD ON JOPTIONPANE WORKS
