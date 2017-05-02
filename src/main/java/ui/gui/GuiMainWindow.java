@@ -248,15 +248,22 @@ public class GuiMainWindow {
 		);
 		mnView.add(mntmViewDataset);
 		
-		JMenuItem mntmHelp = new JMenuItem("Help");
-		mntmHelp.addActionListener(
+		JMenu mnHelp = new JMenu("Help");
+		menuBar.add(mnHelp);
+
+		JMenuItem mntmReference = new JMenuItem("Reference");
+		mntmReference.addActionListener(
 			ev -> {
-				// TODO open help window
+			    // FIXME open help window
+                JOptionPane.showMessageDialog(
+					frame,
+					"Section not available", "Not available",
+					JOptionPane.WARNING_MESSAGE
+				);
 			}
 		);
-		menuBar.add(mntmHelp);
-		
-		
+		mnHelp.add(mntmReference);
+
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
