@@ -1,5 +1,7 @@
 package ui.gui;
 
+import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 import jkset.DataIO;
 import ui.text.TextInterpreter;
 
@@ -11,6 +13,7 @@ import java.io.IOException;
 
 public class GuiMainWindow {
 
+	//<editor-fold desc="UI persistent components">
 	private JFrame frame;
 	private TextInterpreter cmd;
 	
@@ -20,10 +23,13 @@ public class GuiMainWindow {
 	
 	private JTextField[] txtParamEdit;
 	private JTextField[] txtCreateNetworkLayers;
+	//</editor-fold>
 
-	// Giant workaround because of poor swing internal architecture
-	// Without this, the JOptionPane will always focus the button regardless
-	// of invokeLaters and requestFocuses
+	/*
+	Workaround because of poor Swing internal architecture
+	Without this, the JOptionPane will always focus the button
+	first, regardless of invokeLater and requestFocus
+	*/
 	private static final HierarchyListener requestFocusOnShow = e -> {
 		final Component c = e.getComponent();
 		if (c.isShowing() && (e.getChangeFlags() &
@@ -50,14 +56,11 @@ public class GuiMainWindow {
 		);
 	}
 
-	/**
-	 * Create the application.
-	 */
 	private GuiMainWindow() {
 		initialize();
 	}
 
-	
+	@NotNull
 	private String getNetworkName(boolean forcePopup) {
 		String name = "";
 		
@@ -69,17 +72,15 @@ public class GuiMainWindow {
 		
 		return name;
 	}
-	
-	/**
-	 * Initialize the contents of the frame.
-	 */
+
 	private void initialize() {
 		cmd = new TextInterpreter();
-		
+		//<editor-fold desc="Frame init">
 		frame = new JFrame("Freeman's KIII");
 		frame.setBounds(100, 100, 320, 180);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+		//</editor-fold>
+		//<editor-fold desc="Menu bar init">
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 		
@@ -173,6 +174,8 @@ public class GuiMainWindow {
 		mntmReference.addActionListener(this::showReferences);
 		mnHelp.add(mntmReference);
 
+		//</editor-fold>
+        //<editor-fold desc="Component layout">
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
@@ -286,7 +289,8 @@ public class GuiMainWindow {
 		gbc_rigidArea_1.gridx = 4;
 		gbc_rigidArea_1.gridy = 4;
 		frame.getContentPane().add(rigidArea_1, gbc_rigidArea_1);
-		
+		//</editor-fold>
+		//<editor-fold desc="Dialog text boxes init">
 		txtCreateNetworkLayers = new JTextField[3];
 		for (int i = 0; i < txtCreateNetworkLayers.length; i++)
 			txtCreateNetworkLayers[i] = new JTextField(5);
@@ -296,28 +300,32 @@ public class GuiMainWindow {
 		for (int i = 0; i < txtParamEdit.length; i++)
 			txtParamEdit[i] = new JTextField(5);
 		txtParamEdit[0].addHierarchyListener(requestFocusOnShow);
-
+		//</editor-fold>
+		//<editor-fold desc="Frame config">
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
+		//</editor-fold>
 	}
 	
-	private void showCreateNetworkDialog(@SuppressWarnings("unused") ActionEvent ev) {
+	private void showCreateNetworkDialog(@SuppressWarnings("unused") ActionEvent e) {
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(0, 2));
-		
+		//<editor-fold desc="Text fields init">
 		for (int i = 0; i < txtCreateNetworkLayers.length; i++) {
 			txtCreateNetworkLayers[i].setText("");
 			
 			panel.add(new JLabel("Layer " + i + " size:"));
 			panel.add(txtCreateNetworkLayers[i]);
 		}
-		
+		//</editor-fold>
+
 		int res = JOptionPane.showConfirmDialog(
 			frame, panel,
 			"Enter layer sizes", JOptionPane.OK_CANCEL_OPTION
 		);
 
 		if (res == JOptionPane.OK_OPTION) {
+			// Create command string
 			StringBuilder bld = new StringBuilder(cmd.NEW_NETWORK.toString()).append(' ');
 			for (JTextField txt : txtCreateNetworkLayers)
 				bld.append(txt.getText()).append(' ');
@@ -325,23 +333,19 @@ public class GuiMainWindow {
 			cmd.execute(bld.toString());
 		}
 	}
-	
-	private String showEditParamDialog() {
-		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(0, 2));
-		for (JTextField txt : txtParamEdit)
-			txt.setText("");
-		
-		panel.add(new JLabel("Parameter name:"));
-		panel.add(txtParamEdit[0]);
-		panel.add(new JLabel("Parameter value:"));
-		panel.add(txtParamEdit[1]);
 
-		if (JOptionPane.showConfirmDialog(frame, panel, "Input parameter data", JOptionPane.OK_CANCEL_OPTION)
-				== JOptionPane.OK_OPTION) {
-			return txtParamEdit[0].getText() + ' ' + txtParamEdit[1].getText();
+	private void trySave(boolean forcePopup) {
+		if (checkKsetLoaded()) {
+			String name = getNetworkName(forcePopup);
+			if (name != null) {
+				try {
+					cmd.execute(cmd.SAVE_NETWORK, name + ".kset");
+					txtNetwork.setText(name);
+				} catch (IllegalArgumentException ex) {
+					showMessage("Error saving file", "Could not save to file " + name + ".kset\n" + ex.getMessage());
+				}
+			}
 		}
-		return null;
 	}
 
 	private void showLoadNetworkDialog(@SuppressWarnings("unused") ActionEvent e) {
@@ -355,56 +359,8 @@ public class GuiMainWindow {
 			}
 		}
 	}
-	
-	private void showNetworkDisplayDialog(@SuppressWarnings("unused") ActionEvent e) {
-		if (checkKsetLoaded()) {
-			JPanel panel = new JPanel();
-			panel.setLayout(new GridBagLayout());
-			GridBagConstraints g = new GridBagConstraints();
-			g.anchor = GridBagConstraints.WEST;
-			g.gridx = 0;
-			g.gridy = 0;
 
-			for (int i = 0; i < txtCreateNetworkLayers.length; i++) {
-				panel.add(
-						new JLabel(
-								String.format("Layer %d:%s", i, i == cmd.kset.getOutputLayer() ? " [OUTPUT LAYER]" : "")
-						),
-						g
-				);
-
-				g.gridy++;
-				panel.add(new JLabel("Size: " + cmd.kset.k3[i].getSize()), g);
-
-				g.gridy++;
-				panel.add(new JLabel("Learning rate: " + cmd.kset.k3[i].getLearningRate()), g);
-
-				g.gridy++;
-				panel.add(new JLabel(String.format("Training: %b", cmd.kset.getLayerTraining(i))), g);
-
-				JButton btn = new JButton("Details");
-				btn.addActionListener(ev -> showLayerDetails(Integer.parseInt(ev.getActionCommand())));
-				btn.setActionCommand(String.valueOf(i));
-
-				g.gridy++;
-				panel.add(btn, g);
-
-				if (i != txtCreateNetworkLayers.length - 1) {
-					g.gridy++;
-
-					JLabel sep = new JLabel();
-					sep.setPreferredSize(new Dimension(70, 20));
-					panel.add(sep, g);
-
-					g.gridy++;
-				}
-			}
-
-			JOptionPane.showMessageDialog(frame, panel, txtNetwork.getText(), JOptionPane.PLAIN_MESSAGE);
-		}
-	}
-
-	private void showSetParamDialog(@SuppressWarnings("unused") ActionEvent ev) {
+	private void showSetParamDialog(@SuppressWarnings("unused") ActionEvent e) {
 		if (checkKsetLoaded()) {
 			boolean done = false;
 			do {
@@ -425,7 +381,59 @@ public class GuiMainWindow {
 		}
 	}
 
-	private void showDatasetDisplayDialog(@SuppressWarnings("unused") ActionEvent ev) {
+	private void showNetworkDisplayDialog(@SuppressWarnings("unused") ActionEvent e) {
+		if (checkKsetLoaded()) {
+			JPanel panel = new JPanel();
+			panel.setLayout(new GridBagLayout());
+			GridBagConstraints g = new GridBagConstraints();
+			g.anchor = GridBagConstraints.WEST;
+			g.gridx = 0;
+			g.gridy = 0;
+
+			//<editor-fold desc="Component init & layout">
+			for (int i = 0; i < txtCreateNetworkLayers.length; i++) {
+				panel.add(
+						new JLabel(
+								String.format("Layer %d:%s", i, i == cmd.kset.getOutputLayer() ? " [OUTPUT LAYER]" : "")
+						),
+						g
+				);
+
+				g.gridy++;
+				panel.add(new JLabel("Size: " + cmd.kset.k3[i].getSize()), g);
+
+				g.gridy++;
+				panel.add(new JLabel("Learning rate: " + cmd.kset.k3[i].getLearningRate()), g);
+
+				g.gridy++;
+				panel.add(new JLabel(String.format("Training: %b", cmd.kset.getLayerTraining(i))), g);
+
+				JButton btn = new JButton("Details");
+
+				// Create button which shows details about the corresponding layer.
+				// The action command string is the number of the layer.
+				btn.addActionListener(ev -> showLayerDetails(Integer.parseInt(ev.getActionCommand())));
+				btn.setActionCommand(String.valueOf(i));
+
+				g.gridy++;
+				panel.add(btn, g);
+
+				if (i != txtCreateNetworkLayers.length - 1) {
+					g.gridy++;
+
+					JLabel sep = new JLabel();
+					sep.setPreferredSize(new Dimension(70, 20));
+					panel.add(sep, g);
+
+					g.gridy++;
+				}
+			}
+			//</editor-fold>
+			JOptionPane.showMessageDialog(frame, panel, txtNetwork.getText(), JOptionPane.PLAIN_MESSAGE);
+		}
+	}
+
+	private void showDatasetDisplayDialog(@SuppressWarnings("unused") ActionEvent e) {
 		String filename = JOptionPane.showInputDialog(frame, "Dataset file name");
 		File f;
 
@@ -439,6 +447,7 @@ public class GuiMainWindow {
 				return;
 			}
 
+			//<editor-fold desc="Component init & layout">
 			JPanel pane = new JPanel();
 			pane.setLayout(new GridBagLayout());
 			GridBagConstraints gbc = new GridBagConstraints();
@@ -452,6 +461,7 @@ public class GuiMainWindow {
 			JTextArea txtData = new JTextArea();
 			txtData.setEditable(false);
 
+			// Fill text area with dataset
 			StringBuilder bld = new StringBuilder();
 			for (int i = 0; i < data.length; i++) {
 				bld.append(data[i][0]);
@@ -467,12 +477,45 @@ public class GuiMainWindow {
 			}
 			gbc.gridy++;
 			pane.add(txtData, gbc);
-
+			//</editor-fold>
 			JOptionPane.showMessageDialog(frame, pane, filename, JOptionPane.PLAIN_MESSAGE);
 		}
 	}
-	
+
+	private void showReferences(@SuppressWarnings("unused") ActionEvent e) {
+		// FIXME open references window
+		JOptionPane.showMessageDialog(
+				frame,
+				"Section not available", "Not available",
+				JOptionPane.WARNING_MESSAGE
+		);
+	}
+
+
+	@Nullable
+	private String showEditParamDialog() {
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(0, 2));
+		for (JTextField txt : txtParamEdit)
+			txt.setText("");
+
+		panel.add(new JLabel("Parameter name:"));
+		panel.add(txtParamEdit[0]);
+		panel.add(new JLabel("Parameter value:"));
+		panel.add(txtParamEdit[1]);
+
+		int res = JOptionPane.showConfirmDialog(
+				frame, panel,
+				"Input parameter data", JOptionPane.OK_CANCEL_OPTION
+		);
+		if (res == JOptionPane.OK_OPTION)
+			return txtParamEdit[0].getText() + ' ' + txtParamEdit[1].getText();
+
+		return null;
+	}
+
 	private void showLayerDetails(int i) {
+		//<editor-fold desc="Component init & layout">
 		JPanel panel = new JPanel(new GridLayout(0, 1));
 		panel.add(new JLabel("Id: " + cmd.kset.k3[i].getId()));
 		panel.add(new JLabel("Weights:"));
@@ -481,10 +524,10 @@ public class GuiMainWindow {
 		
 		for (int j = 0; j < w.length; j++)
 			panel.add(new JLabel(String.format("%d: %.5f", j, w[j])));
-		
+		//</editor-fold>
 		JOptionPane.showMessageDialog(frame, panel);
 	}
-	
+
 	private boolean checkKsetLoaded() {
 		if (cmd.kset != null)
 			return true;
@@ -493,34 +536,12 @@ public class GuiMainWindow {
 		return false;
 	}
 	
-	private void showMessage(String title, String message) {
+	private void showMessage(@NotNull String title, @NotNull String message) {
 		JOptionPane.showMessageDialog(frame, message, title, JOptionPane.PLAIN_MESSAGE);
 	}
 
-	private void trySave(boolean forcePopup) {
-		if (checkKsetLoaded()) {
-			String name = getNetworkName(forcePopup);
-			if (name != null) {
-				try {
-					cmd.execute(cmd.SAVE_NETWORK, name + ".kset");
-					txtNetwork.setText(name);
-				} catch (IllegalArgumentException ex) {
-					showMessage("Error saving file", "Could not save to file " + name + ".kset\n" + ex.getMessage());
-				}
-			}
-		}
-	}
-
-	private void showReferences(@SuppressWarnings("unused") ActionEvent e) {
-		// FIXME open references window
-		JOptionPane.showMessageDialog(
-            frame,
-            "Section not available", "Not available",
-            JOptionPane.WARNING_MESSAGE
-		);
-	}
-
-	private void showError(Exception e) {
+	private void showError(@NotNull Exception e) {
 		showMessage("Error", e.getMessage());
 	}
+
 }

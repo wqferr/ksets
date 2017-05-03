@@ -1,5 +1,6 @@
 package ui.text;
 
+import com.sun.istack.internal.NotNull;
 import jkset.DataIO;
 import jkset.KIII;
 
@@ -9,24 +10,25 @@ import java.util.function.Function;
 
 public class TextInterpreter {
 	
-	public class Command {
+	public final class Command {
 		
 		private final String name;
 		private final Function<String[], Exception> action;
 		
-		private Command(String name, Function<String[], Exception> action) {
+		private Command(@NotNull String name, @NotNull Function<String[], Exception> action) {
 			this.name = name;
 			this.action = action;
 			
 			TextInterpreter.this.commands.put(name, this);
 		}
 		
-		public void execute(String[] args) throws IllegalArgumentException {
+		public void execute(@NotNull String[] args) throws IllegalArgumentException {
 			Exception e = this.action.apply(args);
 			if (e != null)
 				throw new IllegalArgumentException(e.getMessage());
 		}
 		
+		@NotNull
 		@Override
 		public String toString() {
 			return this.name;
@@ -51,23 +53,37 @@ public class TextInterpreter {
 	public KIII kset = null;
 	private final Hashtable<String, Command> commands = new Hashtable<>(); 
 
+
+	@SuppressWarnings("unused")
 	public final Command NEW_NETWORK =  new Command("new", this::newNetwork);
+
+	@SuppressWarnings("unused")
 	public final Command SAVE_NETWORK = new Command("save", this::saveNetwork);
+
+	@SuppressWarnings("unused")
 	public final Command LOAD_NETWORK = new Command("load", this::loadNetwork);
-	
+
+
+	@SuppressWarnings("unused")
 	public final Command VIEW_NETWORK = new Command("disp_network", this::showNetwork);
+
+	@SuppressWarnings("unused")
 	public final Command VIEW_DATASET = new Command("disp_dataset", this::showDataset);
 
+
+	@SuppressWarnings("unused")
 	public final Command TRAIN_NETWORK = new Command("train", this::train);
+
+	@SuppressWarnings("unused")
 	public final Command RUN_NETWORK = new Command("run", this::run);
 	
 	
 	public final Command SET_PARAM = new Command("set", this::setParam);
 	
-	public void execute(String line) throws NoSuchElementException, IllegalArgumentException {
+	public void execute(@NotNull String line) throws NoSuchElementException, IllegalArgumentException {
 		StringTokenizer tok = new StringTokenizer(line, " ");
 		String cmdStr = tok.nextToken();
-		
+
 		if (!commands.containsKey(cmdStr))
 			throw new NoSuchElementException("No such command: " + cmdStr);
 		
@@ -79,7 +95,7 @@ public class TextInterpreter {
 		cmd.execute(args.toArray(new String[] {}));
 	}
 	
-	public void execute(Command cmd, String... args) throws IllegalArgumentException {
+	public void execute(@NotNull Command cmd, @NotNull String... args) throws IllegalArgumentException {
 		cmd.execute(args);
 	}
 	
@@ -265,7 +281,7 @@ public class TextInterpreter {
 		kset.train(data);
 		return null;
 	}
-	
+
 	private Exception run(String[] args) {
 		if (kset == null)
 			return new IllegalStateException("No kset loaded");
