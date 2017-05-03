@@ -84,23 +84,11 @@ public class GuiMainWindow {
 		frame.setJMenuBar(menuBar);
 		
 		JMenu mnFile = new JMenu("File");
-		mnFile.setMnemonic('F');
+		mnFile.setMnemonic(KeyEvent.VK_F);
 		menuBar.add(mnFile);
 		
 		JMenuItem mntmNew = new JMenuItem("New");
-		mntmNew.addActionListener(
-            ev -> {
-				int result = showCreateNetworkDialog();
-				
-				if (result == JOptionPane.OK_OPTION) {
-					StringBuilder bld = new StringBuilder(cmd.NEW_NETWORK.toString()).append(' ');
-					for (JTextField txt : txtCreateNetworkLayers)
-						bld.append(txt.getText()).append(' ');
-					
-					cmd.execute(bld.toString());
-				}
-			}
-		);
+		mntmNew.addActionListener(this::showCreateNetworkDialog);
 		mntmNew.setAccelerator(
             KeyStroke.getKeyStroke(
 				KeyEvent.VK_N,
@@ -110,21 +98,7 @@ public class GuiMainWindow {
 		mnFile.add(mntmNew);
 		
 		JMenuItem mntmSave = new JMenuItem("Save");
-		mntmSave.addActionListener(
-			ev -> {
-				if (checkKsetLoaded()) {
-					String name = getNetworkName(false);
-					if (name != null) {
-						try {
-							cmd.execute(cmd.SAVE_NETWORK, name + ".kset");
-							txtNetwork.setText(name);
-						} catch (IllegalArgumentException ex) {
-							showMessage("Error saving file", "Could not save to file " + name + ".kset\n" + ex.getMessage());
-						}
-					}
-				}
-			}
-		);
+		mntmSave.addActionListener(ev -> trySave(false));
 		mntmSave.setAccelerator(
             KeyStroke.getKeyStroke(
 				KeyEvent.VK_S,
@@ -134,21 +108,7 @@ public class GuiMainWindow {
 		mnFile.add(mntmSave);
 		
 		JMenuItem mntmSaveAs = new JMenuItem("Save as...");
-		mntmSaveAs.addActionListener(
-			ev -> {
-				if (checkKsetLoaded()) {
-					String name = getNetworkName(true);
-					if (name != null) {
-						try {
-							cmd.execute(cmd.SAVE_NETWORK, name + ".kset");
-							txtNetwork.setText(name);
-						} catch (IllegalArgumentException ex) {
-							showMessage("Error saving file", "Could not save to file " + name + ".kset\n" + ex.getMessage());
-						}
-					}
-				}
-			}
-		);
+		mntmSaveAs.addActionListener(ev -> trySave(true));
 		mntmSaveAs.setAccelerator(
             KeyStroke.getKeyStroke(
                 KeyEvent.VK_S,
@@ -158,19 +118,7 @@ public class GuiMainWindow {
 		mnFile.add(mntmSaveAs);
 		
 		JMenuItem mntmLoad = new JMenuItem("Load");
-		mntmLoad.addActionListener(
-			ev -> {
-				String name = getNetworkName(true);
-				if (name != null) {
-					try {
-						cmd.execute(cmd.LOAD_NETWORK, name + ".kset");
-						txtNetwork.setText(name);
-					} catch (IllegalArgumentException ex) {
-						showMessage("Error loading file", "Could not load file " + name + ".kset\n" + ex.getMessage());
-					}
-				}
-			}
-		);
+		mntmLoad.addActionListener(this::showLoadNetworkDialog);
 		mntmLoad.setAccelerator(
             KeyStroke.getKeyStroke(
                 KeyEvent.VK_O,
@@ -180,32 +128,11 @@ public class GuiMainWindow {
 		mnFile.add(mntmLoad);
 		
 		JMenu mnEdit = new JMenu("Edit");
-		mnEdit.setMnemonic('E');
+		mnEdit.setMnemonic(KeyEvent.VK_E);
 		menuBar.add(mnEdit);
 		
 		JMenuItem mntmSetParam = new JMenuItem("Set parameter");
-		mntmSetParam.addActionListener(
-			ev -> {
-				if (checkKsetLoaded()) {
-					boolean done = false;
-					do {
-						String args = showEditParamDialog();
-						if (args == null) {
-							done = true;
-						} else {
-							StringBuilder bld = new StringBuilder(cmd.SET_PARAM.toString()).append(' ');
-							bld.append(args);
-							try {
-								cmd.execute(bld.toString());
-								done = true;
-							} catch (IllegalArgumentException ex) {
-								showError(ex);
-							}
-						}
-					} while (!done);
-				}
-			}
-		);
+		mntmSetParam.addActionListener(this::showSetParamDialog);
 		mntmSetParam.setAccelerator(
 			KeyStroke.getKeyStroke(
 				KeyEvent.VK_P,
@@ -215,16 +142,11 @@ public class GuiMainWindow {
 		mnEdit.add(mntmSetParam);
 		
 		JMenu mnView = new JMenu("View");
-		mnView.setMnemonic('V');
+		mnView.setMnemonic(KeyEvent.VK_V);
 		menuBar.add(mnView);
 		
 		JMenuItem mntmViewNetwork = new JMenuItem("Network");
-		mntmViewNetwork.addActionListener(
-			ev -> {
-				if (checkKsetLoaded())
-					showNetworkDisplayDialog();
-			}
-		);
+		mntmViewNetwork.addActionListener(this::showNetworkDisplayDialog);
 		mntmViewNetwork.setAccelerator(
 			KeyStroke.getKeyStroke(
 				KeyEvent.VK_N,
@@ -234,54 +156,7 @@ public class GuiMainWindow {
 		mnView.add(mntmViewNetwork);
 		
 		JMenuItem mntmViewDataset = new JMenuItem("Dataset");
-		mntmViewDataset.addActionListener(
-			ev -> {
-				String filename = JOptionPane.showInputDialog(frame, "Dataset file name");
-				File f;
-				
-				if (filename != null) {
-					f = new File(filename);
-					double[][] data;
-					try {
-						data = DataIO.read(f);
-					} catch (IOException ex) {
-						showError(ex);
-						return;
-					}
-					
-					JPanel pane = new JPanel();
-					pane.setLayout(new GridBagLayout());
-					GridBagConstraints gbc = new GridBagConstraints();
-					
-					gbc.gridx = 0;
-					gbc.gridy = 0;
-					
-					JLabel lbData = new JLabel(String.format("%dx%d dataset\n", data.length, data[0].length));
-					pane.add(lbData, gbc);
-					
-					JTextArea txtData = new JTextArea();
-					txtData.setEditable(false);
-					
-					StringBuilder bld = new StringBuilder();
-					for (int i = 0; i < data.length; i++) {
-						bld.append(data[i][0]);
-						
-						for (int j = 1; j < data[i].length; j++)
-							bld.append('\t').append(data[i][j]);
-						
-						txtData.append(bld.toString());
-						if (i < data.length-1)
-							txtData.append("\n");
-						
-						bld.setLength(0);
-					}
-					gbc.gridy++;
-					pane.add(txtData, gbc);
-					
-					JOptionPane.showMessageDialog(frame, pane, filename, JOptionPane.PLAIN_MESSAGE);
-				}
-			}
-		);
+		mntmViewDataset.addActionListener(this::showDatasetDisplayDialog);
 		mntmViewDataset.setAccelerator(
             KeyStroke.getKeyStroke(
                 KeyEvent.VK_D,
@@ -291,20 +166,11 @@ public class GuiMainWindow {
 		mnView.add(mntmViewDataset);
 		
 		JMenu mnHelp = new JMenu("Help");
-		mnHelp.setMnemonic('H');
+		mnHelp.setMnemonic(KeyEvent.VK_H);
 		menuBar.add(mnHelp);
 
 		JMenuItem mntmReference = new JMenuItem("Reference");
-		mntmReference.addActionListener(
-			ev -> {
-			    // FIXME open help window
-                JOptionPane.showMessageDialog(
-					frame,
-					"Section not available", "Not available",
-					JOptionPane.WARNING_MESSAGE
-				);
-			}
-		);
+		mntmReference.addActionListener(this::showReferences);
 		mnHelp.add(mntmReference);
 
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -435,7 +301,7 @@ public class GuiMainWindow {
 		frame.setLocationRelativeTo(null);
 	}
 	
-	private int showCreateNetworkDialog() {
+	private void showCreateNetworkDialog(@SuppressWarnings("unused") ActionEvent ev) {
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(0, 2));
 		
@@ -446,10 +312,18 @@ public class GuiMainWindow {
 			panel.add(txtCreateNetworkLayers[i]);
 		}
 		
-		return JOptionPane.showConfirmDialog(
+		int res = JOptionPane.showConfirmDialog(
 			frame, panel,
 			"Enter layer sizes", JOptionPane.OK_CANCEL_OPTION
 		);
+
+		if (res == JOptionPane.OK_OPTION) {
+			StringBuilder bld = new StringBuilder(cmd.NEW_NETWORK.toString()).append(' ');
+			for (JTextField txt : txtCreateNetworkLayers)
+				bld.append(txt.getText()).append(' ');
+
+			cmd.execute(bld.toString());
+		}
 	}
 	
 	private String showEditParamDialog() {
@@ -469,50 +343,133 @@ public class GuiMainWindow {
 		}
 		return null;
 	}
-	
-	private void showNetworkDisplayDialog() {
-		JPanel panel = new JPanel();
-		panel.setLayout(new GridBagLayout());
-		GridBagConstraints g = new GridBagConstraints();
-		g.anchor = GridBagConstraints.WEST;
-		g.gridx = 0;
-		g.gridy = 0;
-		
-		for (int i = 0; i < txtCreateNetworkLayers.length; i++) {
-			panel.add(
-				new JLabel(
-					String.format("Layer %d:%s", i, i == cmd.kset.getOutputLayer() ? " [OUTPUT LAYER]" : "")
-				), g
-			);
 
-			g.gridy++;
-			panel.add(new JLabel("Size: " + cmd.kset.k3[i].getSize()), g);
-
-			g.gridy++;
-			panel.add(new JLabel("Learning rate: " + cmd.kset.k3[i].getLearningRate()), g);
-
-			g.gridy++;
-			panel.add(new JLabel(String.format("Training: %b", cmd.kset.getLayerTraining(i))), g);
-
-			JButton btn = new JButton("Details");
-			btn.addActionListener(ev -> showLayerDetails(Integer.parseInt(ev.getActionCommand())));
-			btn.setActionCommand(String.valueOf(i));
-
-			g.gridy++;
-			panel.add(btn, g);
-			
-			if (i != txtCreateNetworkLayers.length-1) {
-				g.gridy++;
-
-				JLabel sep = new JLabel();
-				sep.setPreferredSize(new Dimension(70, 20));
-				panel.add(sep, g);
-
-				g.gridy++;
+	private void showLoadNetworkDialog(@SuppressWarnings("unused") ActionEvent e) {
+		String name = getNetworkName(true);
+		if (name != null) {
+			try {
+				cmd.execute(cmd.LOAD_NETWORK, name + ".kset");
+				txtNetwork.setText(name);
+			} catch (IllegalArgumentException ex) {
+				showMessage("Error loading file", "Could not load file " + name + ".kset\n" + ex.getMessage());
 			}
 		}
-		
-		JOptionPane.showMessageDialog(frame, panel, txtNetwork.getText(), JOptionPane.PLAIN_MESSAGE);
+	}
+	
+	private void showNetworkDisplayDialog(@SuppressWarnings("unused") ActionEvent e) {
+		if (checkKsetLoaded()) {
+			JPanel panel = new JPanel();
+			panel.setLayout(new GridBagLayout());
+			GridBagConstraints g = new GridBagConstraints();
+			g.anchor = GridBagConstraints.WEST;
+			g.gridx = 0;
+			g.gridy = 0;
+
+			for (int i = 0; i < txtCreateNetworkLayers.length; i++) {
+				panel.add(
+						new JLabel(
+								String.format("Layer %d:%s", i, i == cmd.kset.getOutputLayer() ? " [OUTPUT LAYER]" : "")
+						),
+						g
+				);
+
+				g.gridy++;
+				panel.add(new JLabel("Size: " + cmd.kset.k3[i].getSize()), g);
+
+				g.gridy++;
+				panel.add(new JLabel("Learning rate: " + cmd.kset.k3[i].getLearningRate()), g);
+
+				g.gridy++;
+				panel.add(new JLabel(String.format("Training: %b", cmd.kset.getLayerTraining(i))), g);
+
+				JButton btn = new JButton("Details");
+				btn.addActionListener(ev -> showLayerDetails(Integer.parseInt(ev.getActionCommand())));
+				btn.setActionCommand(String.valueOf(i));
+
+				g.gridy++;
+				panel.add(btn, g);
+
+				if (i != txtCreateNetworkLayers.length - 1) {
+					g.gridy++;
+
+					JLabel sep = new JLabel();
+					sep.setPreferredSize(new Dimension(70, 20));
+					panel.add(sep, g);
+
+					g.gridy++;
+				}
+			}
+
+			JOptionPane.showMessageDialog(frame, panel, txtNetwork.getText(), JOptionPane.PLAIN_MESSAGE);
+		}
+	}
+
+	private void showSetParamDialog(@SuppressWarnings("unused") ActionEvent ev) {
+		if (checkKsetLoaded()) {
+			boolean done = false;
+			do {
+				String args = showEditParamDialog();
+				if (args == null) {
+					done = true;
+				} else {
+					StringBuilder bld = new StringBuilder(cmd.SET_PARAM.toString()).append(' ');
+					bld.append(args);
+					try {
+						cmd.execute(bld.toString());
+						done = true;
+					} catch (IllegalArgumentException ex) {
+						showError(ex);
+					}
+				}
+			} while (!done);
+		}
+	}
+
+	private void showDatasetDisplayDialog(@SuppressWarnings("unused") ActionEvent ev) {
+		String filename = JOptionPane.showInputDialog(frame, "Dataset file name");
+		File f;
+
+		if (filename != null) {
+			f = new File(filename);
+			double[][] data;
+			try {
+				data = DataIO.read(f);
+			} catch (IOException ex) {
+				showError(ex);
+				return;
+			}
+
+			JPanel pane = new JPanel();
+			pane.setLayout(new GridBagLayout());
+			GridBagConstraints gbc = new GridBagConstraints();
+
+			gbc.gridx = 0;
+			gbc.gridy = 0;
+
+			JLabel lbData = new JLabel(String.format("%dx%d dataset\n", data.length, data[0].length));
+			pane.add(lbData, gbc);
+
+			JTextArea txtData = new JTextArea();
+			txtData.setEditable(false);
+
+			StringBuilder bld = new StringBuilder();
+			for (int i = 0; i < data.length; i++) {
+				bld.append(data[i][0]);
+
+				for (int j = 1; j < data[i].length; j++)
+					bld.append('\t').append(data[i][j]);
+
+				txtData.append(bld.toString());
+				if (i < data.length-1)
+					txtData.append("\n");
+
+				bld.setLength(0);
+			}
+			gbc.gridy++;
+			pane.add(txtData, gbc);
+
+			JOptionPane.showMessageDialog(frame, pane, filename, JOptionPane.PLAIN_MESSAGE);
+		}
 	}
 	
 	private void showLayerDetails(int i) {
@@ -538,6 +495,29 @@ public class GuiMainWindow {
 	
 	private void showMessage(String title, String message) {
 		JOptionPane.showMessageDialog(frame, message, title, JOptionPane.PLAIN_MESSAGE);
+	}
+
+	private void trySave(boolean forcePopup) {
+		if (checkKsetLoaded()) {
+			String name = getNetworkName(forcePopup);
+			if (name != null) {
+				try {
+					cmd.execute(cmd.SAVE_NETWORK, name + ".kset");
+					txtNetwork.setText(name);
+				} catch (IllegalArgumentException ex) {
+					showMessage("Error saving file", "Could not save to file " + name + ".kset\n" + ex.getMessage());
+				}
+			}
+		}
+	}
+
+	private void showReferences(@SuppressWarnings("unused") ActionEvent e) {
+		// FIXME open references window
+		JOptionPane.showMessageDialog(
+            frame,
+            "Section not available", "Not available",
+            JOptionPane.WARNING_MESSAGE
+		);
 	}
 
 	private void showError(Exception e) {

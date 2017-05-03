@@ -30,3 +30,4 @@
 28/04       1h          FINALLY FOCUS JTEXTFIELD ON JOPTIONPANE WORKS
 
 03/05       30min       add keyoard shortcuts
+            15min       revise and organize code
