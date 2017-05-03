@@ -5,10 +5,7 @@ import ui.text.TextInterpreter;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.HierarchyEvent;
-import java.awt.event.HierarchyListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -87,11 +84,12 @@ public class GuiMainWindow {
 		frame.setJMenuBar(menuBar);
 		
 		JMenu mnFile = new JMenu("File");
+		mnFile.setMnemonic('F');
 		menuBar.add(mnFile);
 		
 		JMenuItem mntmNew = new JMenuItem("New");
 		mntmNew.addActionListener(
-			ev -> {
+            ev -> {
 				int result = showCreateNetworkDialog();
 				
 				if (result == JOptionPane.OK_OPTION) {
@@ -102,6 +100,12 @@ public class GuiMainWindow {
 					cmd.execute(bld.toString());
 				}
 			}
+		);
+		mntmNew.setAccelerator(
+            KeyStroke.getKeyStroke(
+				KeyEvent.VK_N,
+				KeyEvent.CTRL_MASK
+			)
 		);
 		mnFile.add(mntmNew);
 		
@@ -121,6 +125,12 @@ public class GuiMainWindow {
 				}
 			}
 		);
+		mntmSave.setAccelerator(
+            KeyStroke.getKeyStroke(
+				KeyEvent.VK_S,
+				KeyEvent.CTRL_MASK
+            )
+		);
 		mnFile.add(mntmSave);
 		
 		JMenuItem mntmSaveAs = new JMenuItem("Save as...");
@@ -139,6 +149,12 @@ public class GuiMainWindow {
 				}
 			}
 		);
+		mntmSaveAs.setAccelerator(
+            KeyStroke.getKeyStroke(
+                KeyEvent.VK_S,
+                KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK
+            )
+		);
 		mnFile.add(mntmSaveAs);
 		
 		JMenuItem mntmLoad = new JMenuItem("Load");
@@ -155,9 +171,16 @@ public class GuiMainWindow {
 				}
 			}
 		);
+		mntmLoad.setAccelerator(
+            KeyStroke.getKeyStroke(
+                KeyEvent.VK_O,
+                KeyEvent.CTRL_MASK
+            )
+		);
 		mnFile.add(mntmLoad);
 		
 		JMenu mnEdit = new JMenu("Edit");
+		mnEdit.setMnemonic('E');
 		menuBar.add(mnEdit);
 		
 		JMenuItem mntmSetParam = new JMenuItem("Set parameter");
@@ -183,9 +206,16 @@ public class GuiMainWindow {
 				}
 			}
 		);
+		mntmSetParam.setAccelerator(
+			KeyStroke.getKeyStroke(
+				KeyEvent.VK_P,
+				KeyEvent.CTRL_MASK
+			)
+		);
 		mnEdit.add(mntmSetParam);
 		
 		JMenu mnView = new JMenu("View");
+		mnView.setMnemonic('V');
 		menuBar.add(mnView);
 		
 		JMenuItem mntmViewNetwork = new JMenuItem("Network");
@@ -194,6 +224,12 @@ public class GuiMainWindow {
 				if (checkKsetLoaded())
 					showNetworkDisplayDialog();
 			}
+		);
+		mntmViewNetwork.setAccelerator(
+			KeyStroke.getKeyStroke(
+				KeyEvent.VK_N,
+				KeyEvent.CTRL_MASK | KeyEvent.ALT_MASK
+			)
 		);
 		mnView.add(mntmViewNetwork);
 		
@@ -246,9 +282,16 @@ public class GuiMainWindow {
 				}
 			}
 		);
+		mntmViewDataset.setAccelerator(
+            KeyStroke.getKeyStroke(
+                KeyEvent.VK_D,
+                KeyEvent.CTRL_MASK | KeyEvent.ALT_MASK
+            )
+		);
 		mnView.add(mntmViewDataset);
 		
 		JMenu mnHelp = new JMenu("Help");
+		mnHelp.setMnemonic('H');
 		menuBar.add(mnHelp);
 
 		JMenuItem mntmReference = new JMenuItem("Reference");
@@ -479,7 +522,7 @@ public class GuiMainWindow {
 		
 		double[] w = cmd.kset.k3[i].getWeights();
 		
-		for (int j = 0; j < cmd.kset.k3[i].getSize(); j++)
+		for (int j = 0; j < w.length; j++)
 			panel.add(new JLabel(String.format("%d: %.5f", j, w[j])));
 		
 		JOptionPane.showMessageDialog(frame, panel);
