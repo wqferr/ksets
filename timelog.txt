@@ -28,3 +28,5 @@
             30min       add dataset viewing
 
 28/04       1h          FINALLY FOCUS JTEXTFIELD ON JOPTIONPANE WORKS
+
+03/05       30min       add keyoard shortcuts
