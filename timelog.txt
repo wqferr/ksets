@@ -32,3 +32,4 @@
 03/05       30min       add keyoard shortcuts
             15min       revise and organize code
             30min       start documenting code
+            30min       more code cleanup

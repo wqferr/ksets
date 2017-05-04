@@ -21,8 +21,9 @@ public class TextInterpreter {
 			
 			TextInterpreter.this.commands.put(name, this);
 		}
-		
-		public void execute(@NotNull String[] args) throws IllegalArgumentException {
+
+		@SuppressWarnings("WeakerAccess")
+		public void execute(@NotNull String... args) throws IllegalArgumentException {
 			Exception e = this.action.apply(args);
 			if (e != null)
 				throw new IllegalArgumentException(e.getMessage());
@@ -148,6 +149,7 @@ public class TextInterpreter {
 			return new NoSuchElementException("Must specify a parameter to set");
 		
 		switch (args[0]) {
+			//<editor-fold desc="Layer training">
 			case "layer_training":
 				if (kset == null)
 					return new IllegalStateException("No kset loaded");
@@ -165,7 +167,8 @@ public class TextInterpreter {
 
 				kset.switchLayerTraining(bools);
 				break;
-				
+			//</editor-fold>
+			//<editor-fold desc="Learning rate">
 			case "learning_rate":
 				if (kset == null)
 					return new IllegalStateException("No kset loaded");
@@ -184,7 +187,8 @@ public class TextInterpreter {
 				
 				kset.setLearningRate(layer, alpha);
 				break;
-			
+			//</editor-fold>
+			//<editor-fold desc="Detect instability">
 			case "detect_instability":
 				if (kset == null)
 					return new IllegalStateException("No kset loaded");
@@ -194,7 +198,8 @@ public class TextInterpreter {
 				
 				kset.setDetectInstability(Boolean.parseBoolean(args[1]));
 				break;
-				
+			//</editor-fold>
+			//<editor-fold desc="Output layer">
 			case "output_layer":
 				if (kset == null)
 					return new IllegalStateException("No kset loaded");
@@ -214,17 +219,19 @@ public class TextInterpreter {
 					);
 				kset.setOutputLayer(l);
 				break;
-				
+			//</editor-fold>
+			//<editor-fold desc="Unknown command">
 			default:
 				return new NoSuchElementException(
 					String.format("No parameter by name %s", args[0])
 				);
+			//</editor-fold>
 		}
 		
 		return null;
 	}
 	
-	private Exception showNetwork(String[] args) {
+	private Exception showNetwork(@SuppressWarnings("unused") String[] args) {
 		if (kset == null)
 			return new IllegalStateException("No kset loaded");
 

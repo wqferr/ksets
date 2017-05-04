@@ -141,6 +141,16 @@ public class GuiMainWindow {
 			)
 		);
 		mnEdit.add(mntmSetParam);
+
+		JMenuItem mntmTrain = new JMenuItem("Train");
+		mntmTrain.addActionListener(this::showTrainingDialog);
+		mntmTrain.setAccelerator(
+			KeyStroke.getKeyStroke(
+				KeyEvent.VK_T,
+				KeyEvent.CTRL_MASK
+			)
+		);
+		mnEdit.add(mntmTrain);
 		
 		JMenu mnView = new JMenu("View");
 		mnView.setMnemonic(KeyEvent.VK_V);
@@ -175,7 +185,7 @@ public class GuiMainWindow {
 		mnHelp.add(mntmReference);
 
 		//</editor-fold>
-        //<editor-fold desc="Component layout">
+		//<editor-fold desc="Frame component layout">
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
@@ -192,8 +202,8 @@ public class GuiMainWindow {
 		
 		JLabel lblNetwork = new JLabel("Network:");
 		GridBagConstraints gbc_lblNetwork = new GridBagConstraints();
-		gbc_lblNetwork.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNetwork.anchor = GridBagConstraints.EAST;
+		gbc_lblNetwork.insets = new Insets(0, 0, 5, 30);
+		gbc_lblNetwork.anchor = GridBagConstraints.WEST;
 		gbc_lblNetwork.gridx = 1;
 		gbc_lblNetwork.gridy = 1;
 		frame.getContentPane().add(lblNetwork, gbc_lblNetwork);
@@ -209,9 +219,9 @@ public class GuiMainWindow {
 		frame.getContentPane().add(txtNetwork, gbc_txtNetwork);
 		txtNetwork.setColumns(10);
 		
-		JLabel lblDataset = new JLabel("Dataset:");
+		JLabel lblDataset = new JLabel("Input:");
 		GridBagConstraints gbc_lblDataset = new GridBagConstraints();
-		gbc_lblDataset.anchor = GridBagConstraints.EAST;
+		gbc_lblDataset.anchor = GridBagConstraints.WEST;
 		gbc_lblDataset.insets = new Insets(0, 0, 5, 5);
 		gbc_lblDataset.gridx = 1;
 		gbc_lblDataset.gridy = 2;
@@ -227,12 +237,12 @@ public class GuiMainWindow {
 		frame.getContentPane().add(txtDataset, gbc_txtDataset);
 		txtDataset.setColumns(10);
 		
-		JButton btnTrain = new JButton("Train");
+		/*JButton btnTrain = new JButton("Train");
 		btnTrain.addActionListener(
 			ev -> {
 				if (checkKsetLoaded()) {
 					try {
-						cmd.execute(cmd.TRAIN_NETWORK, txtDataset.getText());
+						cmd.TRAIN_NETWORK.execute(txtDataset.getText());
 					} catch (IllegalArgumentException ex) {
 						showError(ex);
 					}
@@ -244,12 +254,12 @@ public class GuiMainWindow {
 		gbc_btnTrain.insets = new Insets(0, 0, 5, 5);
 		gbc_btnTrain.gridx = 3;
 		gbc_btnTrain.gridy = 2;
-		frame.getContentPane().add(btnTrain, gbc_btnTrain);
+		frame.getContentPane().add(btnTrain, gbc_btnTrain);*/
 		
 		JLabel lblOutput = new JLabel("Output:");
 		GridBagConstraints gbc_lblOutput = new GridBagConstraints();
 		gbc_lblOutput.insets = new Insets(0, 0, 5, 5);
-		gbc_lblOutput.anchor = GridBagConstraints.EAST;
+		gbc_lblOutput.anchor = GridBagConstraints.WEST;
 		gbc_lblOutput.gridx = 1;
 		gbc_lblOutput.gridy = 3;
 		frame.getContentPane().add(lblOutput, gbc_lblOutput);
@@ -268,27 +278,30 @@ public class GuiMainWindow {
 		JButton btnRun = new JButton("Run");
 		btnRun.addActionListener(
 			ev -> {
-				if (checkKsetLoaded()) {
-					try {
-						cmd.execute(cmd.RUN_NETWORK, txtDataset.getText(), txtOutput.getText());
-					} catch (IllegalArgumentException ex) {
-						showError(ex);
-					}
-				}
+				if (!checkKsetLoaded())
+				    return;
+
+                try {
+                    cmd.RUN_NETWORK.execute(txtDataset.getText(), txtOutput.getText());
+                } catch (IllegalArgumentException ex) {
+                    showError(ex);
+                }
 			}
 		);
 		GridBagConstraints gbc_btnRun = new GridBagConstraints();
-		gbc_btnRun.insets = new Insets(0, 0, 5, 5);
-		gbc_btnRun.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnRun.gridx = 3;
-		gbc_btnRun.gridy = 3;
+		gbc_btnRun.insets = new Insets(5, 0, 5, 5);
+		gbc_btnRun.anchor = GridBagConstraints.EAST;
+		gbc_btnRun.gridx = 2;
+		gbc_btnRun.gridy = 4;
 		frame.getContentPane().add(btnRun, gbc_btnRun);
-		
+
 		Component rigidArea_1 = Box.createRigidArea(new Dimension(20, 20));
 		GridBagConstraints gbc_rigidArea_1 = new GridBagConstraints();
-		gbc_rigidArea_1.gridx = 4;
-		gbc_rigidArea_1.gridy = 4;
+		gbc_rigidArea_1.gridx = 3;
+		gbc_rigidArea_1.gridy = 5;
 		frame.getContentPane().add(rigidArea_1, gbc_rigidArea_1);
+
+		frame.pack();
 		//</editor-fold>
 		//<editor-fold desc="Dialog text boxes init">
 		txtCreateNetworkLayers = new JTextField[3];
@@ -306,7 +319,8 @@ public class GuiMainWindow {
 		frame.setLocationRelativeTo(null);
 		//</editor-fold>
 	}
-	
+
+	// Commands
 	private void showCreateNetworkDialog(@SuppressWarnings("unused") ActionEvent e) {
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(0, 2));
@@ -335,24 +349,24 @@ public class GuiMainWindow {
 	}
 
 	private void trySave(boolean forcePopup) {
-		if (checkKsetLoaded()) {
-			String name = getNetworkName(forcePopup);
-			if (name != null) {
-				try {
-					cmd.execute(cmd.SAVE_NETWORK, name + ".kset");
-					txtNetwork.setText(name);
-				} catch (IllegalArgumentException ex) {
-					showMessage("Error saving file", "Could not save to file " + name + ".kset\n" + ex.getMessage());
-				}
-			}
-		}
+		if (!checkKsetLoaded())
+			return;
+        String name = getNetworkName(forcePopup);
+        if (name != null) {
+            try {
+                cmd.SAVE_NETWORK.execute(name + ".kset");
+                txtNetwork.setText(name);
+            } catch (IllegalArgumentException ex) {
+                showMessage("Error saving file", "Could not save to file " + name + ".kset\n" + ex.getMessage());
+            }
+        }
 	}
 
 	private void showLoadNetworkDialog(@SuppressWarnings("unused") ActionEvent e) {
 		String name = getNetworkName(true);
 		if (name != null) {
 			try {
-				cmd.execute(cmd.LOAD_NETWORK, name + ".kset");
+				cmd.LOAD_NETWORK.execute(name + ".kset");
 				txtNetwork.setText(name);
 			} catch (IllegalArgumentException ex) {
 				showMessage("Error loading file", "Could not load file " + name + ".kset\n" + ex.getMessage());
@@ -360,77 +374,123 @@ public class GuiMainWindow {
 		}
 	}
 
+
 	private void showSetParamDialog(@SuppressWarnings("unused") ActionEvent e) {
-		if (checkKsetLoaded()) {
-			boolean done = false;
-			do {
-				String args = showEditParamDialog();
-				if (args == null) {
-					done = true;
-				} else {
-					StringBuilder bld = new StringBuilder(cmd.SET_PARAM.toString()).append(' ');
-					bld.append(args);
-					try {
-						cmd.execute(bld.toString());
-						done = true;
-					} catch (IllegalArgumentException ex) {
-						showError(ex);
-					}
-				}
-			} while (!done);
+		if (!checkKsetLoaded())
+			return;
+
+        boolean done = false;
+        do {
+            String args = showEditParamDialog();
+            if (args == null) {
+                done = true;
+            } else {
+                StringBuilder bld = new StringBuilder(cmd.SET_PARAM.toString()).append(' ');
+                bld.append(args);
+                try {
+                    cmd.execute(bld.toString());
+                    done = true;
+                } catch (IllegalArgumentException ex) {
+                    showError(ex);
+                }
+            }
+        } while (!done);
+	}
+
+	private void showTrainingDialog(@SuppressWarnings("unused") ActionEvent e) {
+	    if (!checkKsetLoaded())
+	    	return;
+
+	    //<editor-fold desc="Component init & layout">
+	    JCheckBox[] boxes = new JCheckBox[cmd.kset.k3.length];
+		JPanel pane = new JPanel(new GridLayout(0, 2));
+
+		JTextField txtTrainDataset = new JTextField();
+
+		for (int i = 0; i < boxes.length; i++) {
+			boxes[i] = new JCheckBox();
+			boxes[i].setSelected(cmd.kset.getLayerTraining(i));
+
+			pane.add(new JLabel(String.format("Train layer %d", i)));
+		    pane.add(boxes[i]);
+		}
+
+		pane.add(new JLabel("Training dataset:"));
+		pane.add(txtTrainDataset);
+		//</editor-fold>
+
+		int res = JOptionPane.showConfirmDialog(
+			frame, pane, "Select layer training",
+            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE
+		);
+
+		if (res == JOptionPane.OK_OPTION) {
+		    String[] layerTrain = new String[boxes.length+1];
+		    layerTrain[0] = "layer_training";
+			for (int i = 0; i < boxes.length; i++)
+				layerTrain[i+1] = String.valueOf(boxes[i].isSelected());
+
+			try {
+				cmd.SET_PARAM.execute(layerTrain);
+				cmd.TRAIN_NETWORK.execute(txtTrainDataset.getText());
+			} catch (IllegalArgumentException ex) {
+			    showError(ex);
+			}
 		}
 	}
 
+
 	private void showNetworkDisplayDialog(@SuppressWarnings("unused") ActionEvent e) {
-		if (checkKsetLoaded()) {
-			JPanel panel = new JPanel();
-			panel.setLayout(new GridBagLayout());
-			GridBagConstraints g = new GridBagConstraints();
-			g.anchor = GridBagConstraints.WEST;
-			g.gridx = 0;
-			g.gridy = 0;
+		if (!checkKsetLoaded())
+			return;
 
-			//<editor-fold desc="Component init & layout">
-			for (int i = 0; i < txtCreateNetworkLayers.length; i++) {
-				panel.add(
-						new JLabel(
-								String.format("Layer %d:%s", i, i == cmd.kset.getOutputLayer() ? " [OUTPUT LAYER]" : "")
-						),
-						g
-				);
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints g = new GridBagConstraints();
+        g.anchor = GridBagConstraints.WEST;
+        g.gridx = 0;
+        g.gridy = 0;
 
-				g.gridy++;
-				panel.add(new JLabel("Size: " + cmd.kset.k3[i].getSize()), g);
+        //<editor-fold desc="Component init & layout">
+    for (int i = 0; i < txtCreateNetworkLayers.length; i++) {
+    panel.add(
+    new JLabel(
+    String.format("Layer %d:%s", i, i == cmd.kset.getOutputLayer() ? " [OUTPUT LAYER]" : "")
+    ),
+    g
+    );
 
-				g.gridy++;
-				panel.add(new JLabel("Learning rate: " + cmd.kset.k3[i].getLearningRate()), g);
+    g.gridy++;
+    panel.add(new JLabel("Size: " + cmd.kset.k3[i].getSize()), g);
 
-				g.gridy++;
-				panel.add(new JLabel(String.format("Training: %b", cmd.kset.getLayerTraining(i))), g);
+    g.gridy++;
+    panel.add(new JLabel("Learning rate: " + cmd.kset.k3[i].getLearningRate()), g);
 
-				JButton btn = new JButton("Details");
+    g.gridy++;
+    panel.add(new JLabel(String.format("Training: %b", cmd.kset.getLayerTraining(i))), g);
 
-				// Create button which shows details about the corresponding layer.
-				// The action command string is the number of the layer.
-				btn.addActionListener(ev -> showLayerDetails(Integer.parseInt(ev.getActionCommand())));
-				btn.setActionCommand(String.valueOf(i));
+    JButton btn = new JButton("Details");
 
-				g.gridy++;
-				panel.add(btn, g);
+    // Create button which shows details about the corresponding layer.
+    // The action command string is the number of the layer.
+    btn.addActionListener(ev -> showLayerDetails(Integer.parseInt(ev.getActionCommand())));
+    btn.setActionCommand(String.valueOf(i));
 
-				if (i != txtCreateNetworkLayers.length - 1) {
-					g.gridy++;
+    g.gridy++;
+    panel.add(btn, g);
 
-					JLabel sep = new JLabel();
-					sep.setPreferredSize(new Dimension(70, 20));
-					panel.add(sep, g);
+    if (i != txtCreateNetworkLayers.length - 1) {
+    g.gridy++;
 
-					g.gridy++;
-				}
-			}
-			//</editor-fold>
-			JOptionPane.showMessageDialog(frame, panel, txtNetwork.getText(), JOptionPane.PLAIN_MESSAGE);
-		}
+    JLabel sep = new JLabel();
+    sep.setPreferredSize(new Dimension(70, 20));
+    panel.add(sep, g);
+
+    g.gridy++;
+    }
+    }
+    //</editor-fold>
+        JOptionPane.showMessageDialog(frame, panel, txtNetwork.getText(), JOptionPane.PLAIN_MESSAGE);
 	}
 
 	private void showDatasetDisplayDialog(@SuppressWarnings("unused") ActionEvent e) {
@@ -482,6 +542,7 @@ public class GuiMainWindow {
 		}
 	}
 
+
 	private void showReferences(@SuppressWarnings("unused") ActionEvent e) {
 		// FIXME open references window
 		JOptionPane.showMessageDialog(
@@ -492,6 +553,7 @@ public class GuiMainWindow {
 	}
 
 
+	// Utility methods
 	@Nullable
 	private String showEditParamDialog() {
 		JPanel panel = new JPanel();
