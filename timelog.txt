@@ -35,5 +35,6 @@
             30min       more code cleanup
 
 04/05       30min       create basic structure for help window
+            40min       work on partial report
 
 05/05       1h          start layout of help window
