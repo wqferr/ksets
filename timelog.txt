@@ -33,3 +33,5 @@
             15min       revise and organize code
             30min       start documenting code
             30min       more code cleanup
+
+04/05       30min       create basic structure for help window

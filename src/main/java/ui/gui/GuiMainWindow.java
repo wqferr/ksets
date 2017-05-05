@@ -181,7 +181,7 @@ public class GuiMainWindow {
 		menuBar.add(mnHelp);
 
 		JMenuItem mntmReference = new JMenuItem("Reference");
-		mntmReference.addActionListener(this::showReferences);
+		mntmReference.addActionListener(this::showReference);
 		mnHelp.add(mntmReference);
 
 		//</editor-fold>
@@ -543,13 +543,9 @@ public class GuiMainWindow {
 	}
 
 
-	private void showReferences(@SuppressWarnings("unused") ActionEvent e) {
+	private void showReference(@SuppressWarnings("unused") ActionEvent e) {
 		// FIXME open references window
-		JOptionPane.showMessageDialog(
-				frame,
-				"Section not available", "Not available",
-				JOptionPane.WARNING_MESSAGE
-		);
+        GuiHelpWindow.show();
 	}
 
 
