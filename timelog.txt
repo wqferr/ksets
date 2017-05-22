@@ -50,3 +50,5 @@
 15/05       1h          fininsh reading form section of paper
 
 18/05       45min       start first section of usability feedback form
+
+22/05       30min       finish first version of form
