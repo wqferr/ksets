@@ -17,12 +17,12 @@ public class GuiMainWindow {
 	private JFrame frame;
 	private TextInterpreter cmd;
 	
-	private JTextField txtNetwork;
+	private JTextField txtModel;
 	private JTextField txtDataset;
 	private JTextField txtOutput;
 	
 	private JTextField[] txtParamEdit;
-	private JTextField[] txtCreateNetworkLayers;
+	private JTextField[] txtCreateModelLayers;
 	//</editor-fold>
 
 	/*
@@ -61,11 +61,11 @@ public class GuiMainWindow {
 	}
 
 	@NotNull
-	private String getNetworkName(boolean forcePopup) {
+	private String getModelName(boolean forcePopup) {
 		String name = "";
 		
 		if (!forcePopup)
-			name = txtNetwork.getText();
+			name = txtModel.getText();
 		
 		while (name != null && name.isEmpty())
 			name = JOptionPane.showInputDialog("Enter network name");
@@ -89,7 +89,7 @@ public class GuiMainWindow {
 		menuBar.add(mnFile);
 		
 		JMenuItem mntmNew = new JMenuItem("New");
-		mntmNew.addActionListener(this::showCreateNetworkDialog);
+		mntmNew.addActionListener(this::showCreateModelDialog);
 		mntmNew.setAccelerator(
             KeyStroke.getKeyStroke(
 				KeyEvent.VK_N,
@@ -119,7 +119,7 @@ public class GuiMainWindow {
 		mnFile.add(mntmSaveAs);
 		
 		JMenuItem mntmLoad = new JMenuItem("Load");
-		mntmLoad.addActionListener(this::showLoadNetworkDialog);
+		mntmLoad.addActionListener(this::showLoadModelDialog);
 		mntmLoad.setAccelerator(
             KeyStroke.getKeyStroke(
                 KeyEvent.VK_O,
@@ -156,15 +156,15 @@ public class GuiMainWindow {
 		mnView.setMnemonic(KeyEvent.VK_V);
 		menuBar.add(mnView);
 		
-		JMenuItem mntmViewNetwork = new JMenuItem("Network");
-		mntmViewNetwork.addActionListener(this::showNetworkDisplayDialog);
-		mntmViewNetwork.setAccelerator(
+		JMenuItem mntmViewModel = new JMenuItem("Model");
+		mntmViewModel.addActionListener(this::showModelDisplayDialog);
+		mntmViewModel.setAccelerator(
 			KeyStroke.getKeyStroke(
 				KeyEvent.VK_N,
 				KeyEvent.CTRL_MASK | KeyEvent.ALT_MASK
 			)
 		);
-		mnView.add(mntmViewNetwork);
+		mnView.add(mntmViewModel);
 		
 		JMenuItem mntmViewDataset = new JMenuItem("Dataset");
 		mntmViewDataset.addActionListener(this::showDatasetDisplayDialog);
@@ -200,24 +200,24 @@ public class GuiMainWindow {
 		gbc_rigidArea.gridy = 0;
 		frame.getContentPane().add(rigidArea, gbc_rigidArea);
 		
-		JLabel lblNetwork = new JLabel("Network:");
-		GridBagConstraints gbc_lblNetwork = new GridBagConstraints();
-		gbc_lblNetwork.insets = new Insets(0, 0, 5, 30);
-		gbc_lblNetwork.anchor = GridBagConstraints.WEST;
-		gbc_lblNetwork.gridx = 1;
-		gbc_lblNetwork.gridy = 1;
-		frame.getContentPane().add(lblNetwork, gbc_lblNetwork);
+		JLabel lblModel = new JLabel("Model:");
+		GridBagConstraints gbc_lblModel = new GridBagConstraints();
+		gbc_lblModel.insets = new Insets(0, 0, 5, 30);
+		gbc_lblModel.anchor = GridBagConstraints.WEST;
+		gbc_lblModel.gridx = 1;
+		gbc_lblModel.gridy = 1;
+		frame.getContentPane().add(lblModel, gbc_lblModel);
 		
-		txtNetwork = new JTextField();
-		txtNetwork.setHorizontalAlignment(SwingConstants.RIGHT);
-		txtNetwork.setEditable(false);
-		GridBagConstraints gbc_txtNetwork = new GridBagConstraints();
-		gbc_txtNetwork.insets = new Insets(0, 0, 5, 5);
-		gbc_txtNetwork.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txtNetwork.gridx = 2;
-		gbc_txtNetwork.gridy = 1;
-		frame.getContentPane().add(txtNetwork, gbc_txtNetwork);
-		txtNetwork.setColumns(10);
+		txtModel = new JTextField();
+		txtModel.setHorizontalAlignment(SwingConstants.RIGHT);
+		txtModel.setEditable(false);
+		GridBagConstraints gbc_txtModel = new GridBagConstraints();
+		gbc_txtModel.insets = new Insets(0, 0, 5, 5);
+		gbc_txtModel.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txtModel.gridx = 2;
+		gbc_txtModel.gridy = 1;
+		frame.getContentPane().add(txtModel, gbc_txtModel);
+		txtModel.setColumns(10);
 		
 		JLabel lblDataset = new JLabel("Input:");
 		GridBagConstraints gbc_lblDataset = new GridBagConstraints();
@@ -304,10 +304,10 @@ public class GuiMainWindow {
 		frame.pack();
 		//</editor-fold>
 		//<editor-fold desc="Dialog text boxes init">
-		txtCreateNetworkLayers = new JTextField[3];
-		for (int i = 0; i < txtCreateNetworkLayers.length; i++)
-			txtCreateNetworkLayers[i] = new JTextField(5);
-		txtCreateNetworkLayers[0].addHierarchyListener(requestFocusOnShow);
+		txtCreateModelLayers = new JTextField[3];
+		for (int i = 0; i < txtCreateModelLayers.length; i++)
+			txtCreateModelLayers[i] = new JTextField(5);
+		txtCreateModelLayers[0].addHierarchyListener(requestFocusOnShow);
 
 		txtParamEdit = new JTextField[2];
 		for (int i = 0; i < txtParamEdit.length; i++)
@@ -321,15 +321,15 @@ public class GuiMainWindow {
 	}
 
 	// Commands
-	private void showCreateNetworkDialog(@SuppressWarnings("unused") ActionEvent e) {
+	private void showCreateModelDialog(@SuppressWarnings("unused") ActionEvent e) {
 		JPanel panel = new JPanel();
 		panel.setLayout(new GridLayout(0, 2));
 		//<editor-fold desc="Text fields init">
-		for (int i = 0; i < txtCreateNetworkLayers.length; i++) {
-			txtCreateNetworkLayers[i].setText("");
+		for (int i = 0; i < txtCreateModelLayers.length; i++) {
+			txtCreateModelLayers[i].setText("");
 			
 			panel.add(new JLabel("Layer " + i + " size:"));
-			panel.add(txtCreateNetworkLayers[i]);
+			panel.add(txtCreateModelLayers[i]);
 		}
 		//</editor-fold>
 
@@ -341,7 +341,7 @@ public class GuiMainWindow {
 		if (res == JOptionPane.OK_OPTION) {
 			// Create command string
 			StringBuilder bld = new StringBuilder(cmd.NEW_NETWORK.toString()).append(' ');
-			for (JTextField txt : txtCreateNetworkLayers)
+			for (JTextField txt : txtCreateModelLayers)
 				bld.append(txt.getText()).append(' ');
 
 			cmd.execute(bld.toString());
@@ -351,23 +351,23 @@ public class GuiMainWindow {
 	private void trySave(boolean forcePopup) {
 		if (!checkKsetLoaded())
 			return;
-        String name = getNetworkName(forcePopup);
+        String name = getModelName(forcePopup);
         if (name != null) {
             try {
                 cmd.SAVE_NETWORK.execute(name + ".kset");
-                txtNetwork.setText(name);
+                txtModel.setText(name);
             } catch (IllegalArgumentException ex) {
                 showMessage("Error saving file", "Could not save to file " + name + ".kset\n" + ex.getMessage());
             }
         }
 	}
 
-	private void showLoadNetworkDialog(@SuppressWarnings("unused") ActionEvent e) {
-		String name = getNetworkName(true);
+	private void showLoadModelDialog(@SuppressWarnings("unused") ActionEvent e) {
+		String name = getModelName(true);
 		if (name != null) {
 			try {
 				cmd.LOAD_NETWORK.execute(name + ".kset");
-				txtNetwork.setText(name);
+				txtModel.setText(name);
 			} catch (IllegalArgumentException ex) {
 				showMessage("Error loading file", "Could not load file " + name + ".kset\n" + ex.getMessage());
 			}
@@ -440,7 +440,7 @@ public class GuiMainWindow {
 	}
 
 
-	private void showNetworkDisplayDialog(@SuppressWarnings("unused") ActionEvent e) {
+	private void showModelDisplayDialog(@SuppressWarnings("unused") ActionEvent e) {
 		if (!checkKsetLoaded())
 			return;
 
@@ -452,7 +452,7 @@ public class GuiMainWindow {
         g.gridy = 0;
 
         //<editor-fold desc="Component init & layout">
-    for (int i = 0; i < txtCreateNetworkLayers.length; i++) {
+    for (int i = 0; i < txtCreateModelLayers.length; i++) {
     panel.add(
     new JLabel(
     String.format("Layer %d:%s", i, i == cmd.kset.getOutputLayer() ? " [OUTPUT LAYER]" : "")
@@ -479,7 +479,7 @@ public class GuiMainWindow {
     g.gridy++;
     panel.add(btn, g);
 
-    if (i != txtCreateNetworkLayers.length - 1) {
+    if (i != txtCreateModelLayers.length - 1) {
     g.gridy++;
 
     JLabel sep = new JLabel();
@@ -490,7 +490,7 @@ public class GuiMainWindow {
     }
     }
     //</editor-fold>
-        JOptionPane.showMessageDialog(frame, panel, txtNetwork.getText(), JOptionPane.PLAIN_MESSAGE);
+        JOptionPane.showMessageDialog(frame, panel, txtModel.getText(), JOptionPane.PLAIN_MESSAGE);
 	}
 
 	private void showDatasetDisplayDialog(@SuppressWarnings("unused") ActionEvent e) {

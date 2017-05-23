@@ -52,3 +52,6 @@
 18/05       45min       start first section of usability feedback form
 
 22/05       30min       finish first version of form
+
+23/05       1h          start reference page on Overleaf
+                        replace Network with Model in application

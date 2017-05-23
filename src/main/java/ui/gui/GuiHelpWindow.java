@@ -57,10 +57,9 @@ public class GuiHelpWindow {
         frame = new JFrame();
 
         pagePanel = Box.createVerticalBox();
-        pagePanel.setBorder(new EmptyBorder(0, 10, 0, 0));
 
         lbTitle = new JLabel("Test");
-        pagePanel.add(lbTitle);
+        pagePanel.add(lbTitle, 0);
         pagePanel.add(Box.createVerticalStrut(20));
         txtContent = new JTextArea(20, 30);
         txtContent.setEditable(false);
@@ -71,7 +70,9 @@ public class GuiHelpWindow {
         frame.setContentPane(hbox);
 
         hbox.add(new JLabel("JTree will go here"));
+        hbox.add(Box.createHorizontalStrut(5));
         hbox.add(new JSeparator(SwingConstants.VERTICAL));
+        hbox.add(Box.createHorizontalStrut(5));
         hbox.add(pagePanel);
 
         frame.pack();
