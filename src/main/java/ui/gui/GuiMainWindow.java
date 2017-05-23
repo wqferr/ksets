@@ -118,15 +118,15 @@ public class GuiMainWindow {
 		);
 		mnFile.add(mntmSaveAs);
 		
-		JMenuItem mntmLoad = new JMenuItem("Load");
-		mntmLoad.addActionListener(this::showLoadModelDialog);
-		mntmLoad.setAccelerator(
+		JMenuItem mntmOpen = new JMenuItem("Open");
+		mntmOpen.addActionListener(this::showOpenModelDialog);
+		mntmOpen.setAccelerator(
             KeyStroke.getKeyStroke(
                 KeyEvent.VK_O,
                 KeyEvent.CTRL_MASK
             )
 		);
-		mnFile.add(mntmLoad);
+		mnFile.add(mntmOpen);
 		
 		JMenu mnEdit = new JMenu("Edit");
 		mnEdit.setMnemonic(KeyEvent.VK_E);
@@ -240,7 +240,7 @@ public class GuiMainWindow {
 		/*JButton btnTrain = new JButton("Train");
 		btnTrain.addActionListener(
 			ev -> {
-				if (checkKsetLoaded()) {
+				if (checkKsetOpened()) {
 					try {
 						cmd.TRAIN_NETWORK.execute(txtDataset.getText());
 					} catch (IllegalArgumentException ex) {
@@ -278,7 +278,7 @@ public class GuiMainWindow {
 		JButton btnRun = new JButton("Run");
 		btnRun.addActionListener(
 			ev -> {
-				if (!checkKsetLoaded())
+				if (!checkKsetOpened())
 				    return;
 
                 try {
@@ -349,7 +349,7 @@ public class GuiMainWindow {
 	}
 
 	private void trySave(boolean forcePopup) {
-		if (!checkKsetLoaded())
+		if (!checkKsetOpened())
 			return;
         String name = getModelName(forcePopup);
         if (name != null) {
@@ -362,7 +362,7 @@ public class GuiMainWindow {
         }
 	}
 
-	private void showLoadModelDialog(@SuppressWarnings("unused") ActionEvent e) {
+	private void showOpenModelDialog(@SuppressWarnings("unused") ActionEvent e) {
 		String name = getModelName(true);
 		if (name != null) {
 			try {
@@ -376,7 +376,7 @@ public class GuiMainWindow {
 
 
 	private void showSetParamDialog(@SuppressWarnings("unused") ActionEvent e) {
-		if (!checkKsetLoaded())
+		if (!checkKsetOpened())
 			return;
 
         boolean done = false;
@@ -398,7 +398,7 @@ public class GuiMainWindow {
 	}
 
 	private void showTrainingDialog(@SuppressWarnings("unused") ActionEvent e) {
-	    if (!checkKsetLoaded())
+	    if (!checkKsetOpened())
 	    	return;
 
 	    //<editor-fold desc="Component init & layout">
@@ -441,7 +441,7 @@ public class GuiMainWindow {
 
 
 	private void showModelDisplayDialog(@SuppressWarnings("unused") ActionEvent e) {
-		if (!checkKsetLoaded())
+		if (!checkKsetOpened())
 			return;
 
         JPanel panel = new JPanel();
@@ -586,7 +586,7 @@ public class GuiMainWindow {
 		JOptionPane.showMessageDialog(frame, panel);
 	}
 
-	private boolean checkKsetLoaded() {
+	private boolean checkKsetOpened() {
 		if (cmd.kset != null)
 			return true;
 
