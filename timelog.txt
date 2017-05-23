@@ -56,3 +56,4 @@
 23/05       1h          start reference page on Overleaf
                         replace Network with Model in application
             30min       finish file menu reference
+            1h20min     write quick reference table for parameters
