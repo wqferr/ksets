@@ -160,7 +160,7 @@ public class GuiMainWindow {
 		mntmViewModel.addActionListener(this::showModelDisplayDialog);
 		mntmViewModel.setAccelerator(
 			KeyStroke.getKeyStroke(
-				KeyEvent.VK_N,
+				KeyEvent.VK_M,
 				KeyEvent.CTRL_MASK | KeyEvent.ALT_MASK
 			)
 		);
@@ -236,26 +236,7 @@ public class GuiMainWindow {
 		gbc_txtDataset.gridy = 2;
 		frame.getContentPane().add(txtDataset, gbc_txtDataset);
 		txtDataset.setColumns(10);
-		
-		/*JButton btnTrain = new JButton("Train");
-		btnTrain.addActionListener(
-			ev -> {
-				if (checkKsetOpened()) {
-					try {
-						cmd.TRAIN_NETWORK.execute(txtDataset.getText());
-					} catch (IllegalArgumentException ex) {
-						showError(ex);
-					}
-				}
-			}
-		);
-		GridBagConstraints gbc_btnTrain = new GridBagConstraints();
-		gbc_btnTrain.fill = GridBagConstraints.HORIZONTAL;
-		gbc_btnTrain.insets = new Insets(0, 0, 5, 5);
-		gbc_btnTrain.gridx = 3;
-		gbc_btnTrain.gridy = 2;
-		frame.getContentPane().add(btnTrain, gbc_btnTrain);*/
-		
+
 		JLabel lblOutput = new JLabel("Output:");
 		GridBagConstraints gbc_lblOutput = new GridBagConstraints();
 		gbc_lblOutput.insets = new Insets(0, 0, 5, 5);
@@ -444,53 +425,63 @@ public class GuiMainWindow {
 		if (!checkKsetOpened())
 			return;
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
-        GridBagConstraints g = new GridBagConstraints();
-        g.anchor = GridBagConstraints.WEST;
-        g.gridx = 0;
-        g.gridy = 0;
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridBagLayout());
+		GridBagConstraints g = new GridBagConstraints();
+		g.anchor = GridBagConstraints.WEST;
+		g.gridx = 0;
+		g.gridy = 0;
 
-        //<editor-fold desc="Component init & layout">
-    for (int i = 0; i < txtCreateModelLayers.length; i++) {
-    panel.add(
-    new JLabel(
-    String.format("Layer %d:%s", i, i == cmd.kset.getOutputLayer() ? " [OUTPUT LAYER]" : "")
-    ),
-    g
-    );
+		JLabel lbModel = new JLabel("Model details");
+		Font f = lbModel.getFont();
+		lbModel.setFont(new Font(f.getName(), Font.BOLD, f.getSize()+2));
+		panel.add(lbModel, g);
 
-    g.gridy++;
-    panel.add(new JLabel("Size: " + cmd.kset.k3[i].getSize()), g);
+		g.gridy++;
+		panel.add(new JLabel("Output layer: " + cmd.kset.getOutputLayer()), g);
 
-    g.gridy++;
-    panel.add(new JLabel("Learning rate: " + cmd.kset.k3[i].getLearningRate()), g);
+		g.gridy++;
+		panel.add(new JLabel("Learning rate: " + cmd.kset.k3[0].getLearningRate()), g);
 
-    g.gridy++;
-    panel.add(new JLabel(String.format("Training: %b", cmd.kset.getLayerTraining(i))), g);
+		g.gridy++;
+		panel.add(new JLabel("Detecting instability: " + cmd.kset.getDetectInstability()), g);
+//
+//		g.gridy++;
+//		panel.add(new JLabel("Layer details"));
+//
+		//<editor-fold desc="Component init & layout">
+		for (int i = 0; i < txtCreateModelLayers.length; i++) {
+			g.gridy++;
 
-    JButton btn = new JButton("Details");
+			JLabel sep = new JLabel();
+			sep.setPreferredSize(new Dimension(70, 20));
+			panel.add(sep, g);
 
-    // Create button which shows details about the corresponding layer.
-    // The action command string is the number of the layer.
-    btn.addActionListener(ev -> showLayerDetails(Integer.parseInt(ev.getActionCommand())));
-    btn.setActionCommand(String.valueOf(i));
+			JLabel lbLayer = new JLabel(String.format("Layer %d:", i));
+			f = lbLayer.getFont();
+			lbLayer.setFont(new Font(f.getName(), Font.BOLD, f.getSize()+2));
+			panel.add(lbLayer, g);
 
-    g.gridy++;
-    panel.add(btn, g);
+			g.gridy++;
+			panel.add(new JLabel("Size: " + cmd.kset.k3[i].getSize()), g);
 
-    if (i != txtCreateModelLayers.length - 1) {
-    g.gridy++;
+			g.gridy++;
+			panel.add(new JLabel(String.format("Training: %b", cmd.kset.getLayerTraining(i))), g);
 
-    JLabel sep = new JLabel();
-    sep.setPreferredSize(new Dimension(70, 20));
-    panel.add(sep, g);
+			JButton btn = new JButton("Details");
 
-    g.gridy++;
-    }
-    }
-    //</editor-fold>
-        JOptionPane.showMessageDialog(frame, panel, txtModel.getText(), JOptionPane.PLAIN_MESSAGE);
+			// Create button which shows details about the corresponding layer.
+			// The action command string is the number of the layer.
+			btn.addActionListener(ev -> showLayerDetails(Integer.parseInt(ev.getActionCommand())));
+			btn.setActionCommand(String.valueOf(i));
+
+			g.gridy++;
+			panel.add(btn, g);
+
+            g.gridy++;
+		}
+		//</editor-fold>
+		JOptionPane.showMessageDialog(frame, panel, txtModel.getText(), JOptionPane.PLAIN_MESSAGE);
 	}
 
 	private void showDatasetDisplayDialog(@SuppressWarnings("unused") ActionEvent e) {
@@ -536,7 +527,12 @@ public class GuiMainWindow {
 				bld.setLength(0);
 			}
 			gbc.gridy++;
-			pane.add(txtData, gbc);
+			txtData.setPreferredSize(new Dimension(300, 400));
+			txtData.setMinimumSize(new Dimension(300, 400));
+			JScrollPane scrollPane = new JScrollPane(txtData);
+			scrollPane.setPreferredSize(new Dimension(300, 400));
+			scrollPane.setMinimumSize(new Dimension(300, 400));
+			pane.add(scrollPane, gbc);
 			//</editor-fold>
 			JOptionPane.showMessageDialog(frame, pane, filename, JOptionPane.PLAIN_MESSAGE);
 		}
@@ -575,7 +571,6 @@ public class GuiMainWindow {
 	private void showLayerDetails(int i) {
 		//<editor-fold desc="Component init & layout">
 		JPanel panel = new JPanel(new GridLayout(0, 1));
-		panel.add(new JLabel("Id: " + cmd.kset.k3[i].getId()));
 		panel.add(new JLabel("Weights:"));
 		
 		double[] w = cmd.kset.k3[i].getWeights();

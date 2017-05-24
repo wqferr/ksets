@@ -58,3 +58,6 @@
             30min       finish file menu reference
             1h20min     write quick reference table for parameters
             1h          write more in depth about each parameter
+            20min       introductory paragraph to training
+            40min       finish training section
+            50min       first verision of visualization section

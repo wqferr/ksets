@@ -184,6 +184,10 @@ public class KIII implements Serializable {
 	public void setDetectInstability(boolean detectInstability) {
 		this.detectInstability = detectInstability;
 	}
+
+	public boolean getDetectInstability() {
+		return this.detectInstability;
+	}
 	
 	public void setLearningRate(int layer, double alpha) {
 		this.k3[layer].setLearningRate(alpha);
