@@ -1,4 +1,4 @@
-package ui.text;
+package app.ui.text;
 
 import java.io.BufferedReader;
 import java.io.IOException;

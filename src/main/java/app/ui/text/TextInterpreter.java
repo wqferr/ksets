@@ -1,4 +1,4 @@
-package ui.text;
+package app.ui.text;
 
 import com.sun.istack.internal.NotNull;
 import jkset.DataIO;

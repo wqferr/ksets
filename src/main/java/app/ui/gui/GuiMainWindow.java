@@ -1,9 +1,9 @@
-package ui.gui;
+package app.ui.gui;
 
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import jkset.DataIO;
-import ui.text.TextInterpreter;
+import app.ui.text.TextInterpreter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +14,7 @@ import java.io.IOException;
 public class GuiMainWindow {
 
 	//<editor-fold desc="UI persistent components">
-	private JFrame frame;
+	public JFrame frame;
 	private TextInterpreter cmd;
 	
 	private JTextField txtModel;
@@ -43,20 +43,7 @@ public class GuiMainWindow {
 		}
 	};
 
-	public static void main(String[] args) {
-		EventQueue.invokeLater(
-			() -> {
-				try {
-					GuiMainWindow window = new GuiMainWindow();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					System.err.printf("Error initializing window: %s", e.getMessage());
-				}
-			}
-		);
-	}
-
-	private GuiMainWindow() {
+	public GuiMainWindow() {
 		initialize();
 	}
 
@@ -541,7 +528,6 @@ public class GuiMainWindow {
 
 	private void showReference(@SuppressWarnings("unused") ActionEvent e) {
 		// FIXME open references window
-        GuiHelpWindow.show();
 	}
 
 
