@@ -64,3 +64,4 @@
             1h30min     write on running datasets and start reformatting
 
 26/05       20min       write more on text interpreter
+            50min       write on text interpreter commands
