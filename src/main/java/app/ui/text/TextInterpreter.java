@@ -105,16 +105,25 @@ public class TextInterpreter {
 	
 	
 	private Exception newNetwork(String[] args) {
-		try {
-			kset = new KIII(
-				Integer.parseInt(args[0]),
-				Integer.parseInt(args[1]),
-				Integer.parseInt(args[2])
-			);
-			return null;
-		} catch (ArrayIndexOutOfBoundsException e) {
+	    int[] sizes = new int[3];
+	    if (args.length != 3)
 			return new NoSuchElementException("Must provide sizes for all 3 layers of the kset");
+	    for (int i = 0; i < 3; i++) {
+	    	try {
+	    		sizes[i] = Integer.parseInt(args[i]);
+			} catch (NumberFormatException ex) {
+	    		return new IllegalArgumentException("Invalid integer: " + args[i]);
+			}
+			if (sizes[i] <= 0)
+				return new IllegalAccessException("Size must be a positive integer");
 		}
+
+        kset = new KIII(
+        		sizes[0],
+				sizes[1],
+				sizes[2]
+        );
+        return null;
 	}
 	
 	private Exception saveNetwork(String[] args) {
@@ -134,7 +143,7 @@ public class TextInterpreter {
 	
 	private Exception loadNetwork(String[] args) {
 		if (args.length == 0)
-			return new NoSuchElementException("File name not specified");
+			return new NoSuchElementException("Not enough arguments");
 		
 		try {
 			kset = KIII.load(args[0]);
@@ -146,7 +155,7 @@ public class TextInterpreter {
 	
 	private Exception setParam(String[] args) {
 		if (args.length == 0)
-			return new NoSuchElementException("Must specify a parameter to set");
+			return new NoSuchElementException("Not enough arguments");
 		
 		switch (args[0]) {
 			//<editor-fold desc="Layer training">
@@ -174,17 +183,27 @@ public class TextInterpreter {
 					return new IllegalStateException("No kset loaded");
 				
 				if (args.length <= 2)
-					return new NoSuchElementException("Must specify the layer to set and the new learning rate value");
-				
+					return new NoSuchElementException("Not enough arguments");
+
 				int layer;
 				double alpha;
+
 				try {
 					layer = Integer.parseInt(args[1]);
+				} catch (NumberFormatException e) {
+				    return new IllegalArgumentException("Invalid layer number: " + args[1]);
+				}
+				if (layer < 0 || layer > 2)
+					return new IllegalArgumentException("Invalid layer number: " + args[1]);
+
+				try {
 					alpha = Double.parseDouble(args[2]);
 				} catch (NumberFormatException e) {
-					return e;
+					return new IllegalArgumentException("Invalid learning rate: " + args[2]);
 				}
-				
+				if (alpha < 0)
+					throw new IllegalArgumentException("Invalid learning rate: " + args[2]);
+
 				kset.setLearningRate(layer, alpha);
 				break;
 			//</editor-fold>
@@ -194,8 +213,8 @@ public class TextInterpreter {
 					return new IllegalStateException("No kset loaded");
 				
 				if (args.length <= 1)
-					return new NoSuchElementException("Must specify boolean value");
-				
+                    return new NoSuchElementException("Not enough arguments");
+
 				kset.setDetectInstability(Boolean.parseBoolean(args[1]));
 				break;
 			//</editor-fold>
@@ -204,19 +223,17 @@ public class TextInterpreter {
 				if (kset == null)
 					return new IllegalStateException("No kset loaded");
 				if (args.length <= 1)
-					return new NoSuchElementException("Must specify layer");
+					return new NoSuchElementException("Not enough arguments");
 				int l;
 				
 				try {
 					l = Integer.parseInt(args[1]);
 				} catch (NumberFormatException e) {
-					return new NumberFormatException("\"" + args[1] + "\" is not a valid integer");
+					return new IllegalArgumentException("Invalid integer: " + args[1]);
 				}
 				
 				if (l < 0 || l >= kset.k3.length)
-					return new IndexOutOfBoundsException(
-						String.format("Layer number must be between 0 and %d", kset.k3.length-1)
-					);
+					return new IllegalArgumentException("Invalid layer number: " + args[1]);
 				kset.setOutputLayer(l);
 				break;
 			//</editor-fold>
@@ -256,8 +273,8 @@ public class TextInterpreter {
 
 	private Exception showDataset(String[] args) {
 		if (args.length == 0)
-			return new NoSuchElementException("No dataset file name given");
-		
+			return new NoSuchElementException("Not enough arguments");
+
 		double[][] data;
 		try {
 			data = DataIO.read(args[0]);
@@ -276,7 +293,7 @@ public class TextInterpreter {
 			return new IllegalStateException("No kset loaded");
 		
 		if (args.length == 0)
-			return new NoSuchElementException("No dataset file name given");
+			return new NoSuchElementException("Not enough arguments");
 		
 		double[][] data;
 		try {
@@ -293,7 +310,7 @@ public class TextInterpreter {
 		if (kset == null)
 			return new IllegalStateException("No kset loaded");
 		if (args.length < 2)
-			return new NoSuchElementException("Must provide both an input dataset file name and an output file name");
+			return new NoSuchElementException("Not enough arguments");
 		
 		double[][] data;
 		try {

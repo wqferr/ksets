@@ -1,9 +1,9 @@
 package app.ui.gui;
 
+import app.ui.text.TextInterpreter;
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import jkset.DataIO;
-import app.ui.text.TextInterpreter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -312,7 +312,11 @@ public class GuiMainWindow {
 			for (JTextField txt : txtCreateModelLayers)
 				bld.append(txt.getText()).append(' ');
 
-			cmd.execute(bld.toString());
+			try {
+				cmd.execute(bld.toString());
+			} catch (IllegalArgumentException ex) {
+				showError(ex);
+			}
 		}
 	}
 
@@ -325,7 +329,7 @@ public class GuiMainWindow {
                 cmd.SAVE_NETWORK.execute(name + ".kset");
                 txtModel.setText(name);
             } catch (IllegalArgumentException ex) {
-                showMessage("Error saving file", "Could not save to file " + name + ".kset\n" + ex.getMessage());
+            	showError(ex);
             }
         }
 	}
@@ -337,7 +341,7 @@ public class GuiMainWindow {
 				cmd.LOAD_NETWORK.execute(name + ".kset");
 				txtModel.setText(name);
 			} catch (IllegalArgumentException ex) {
-				showMessage("Error loading file", "Could not load file " + name + ".kset\n" + ex.getMessage());
+			    showError(ex);
 			}
 		}
 	}
@@ -580,7 +584,7 @@ public class GuiMainWindow {
 	}
 
 	private void showError(@NotNull Exception e) {
-		showMessage("Error", e.getMessage());
+	    JOptionPane.showMessageDialog(frame, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 	}
 
 }

@@ -67,3 +67,5 @@
             50min       write on text interpreter commands
             10min       separate main from window class
             15min       add text mode to main
+
+29/05       1h30min     write on error handling and work on reference formatting
