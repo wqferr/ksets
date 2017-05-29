@@ -531,7 +531,11 @@ public class GuiMainWindow {
 
 
 	private void showReference(@SuppressWarnings("unused") ActionEvent e) {
-		// FIXME open references window
+		try {
+			Desktop.getDesktop().open(new File("freemans-kiii-reference.pdf"));
+		} catch (IllegalArgumentException | IOException ex) {
+			showError(ex);
+		}
 	}
 
 

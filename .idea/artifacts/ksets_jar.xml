@@ -5,6 +5,7 @@
       <element id="module-output" name="ksets" />
       <element id="library" level="module" name="jgoodies-forms-1.8.0.jar" module-name="ksets" />
       <element id="extracted-dir" path="$APPLICATION_HOME_DIR$/lib/junit-4.12.jar" path-in-jar="/" />
+      <element id="artifact" artifact-name="freemans-kiii-reference_pdf" />
     </root>
   </artifact>
 </component>
