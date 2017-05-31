@@ -70,3 +70,5 @@
 
 29/05       1h30min     write on error handling and work on reference formatting
             30min       include reference in java project
+
+31/05       30min       meeting to discuss progress
