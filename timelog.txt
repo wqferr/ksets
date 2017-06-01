@@ -72,3 +72,5 @@
             30min       include reference in java project
 
 31/05       30min       meeting to discuss progress
+
+01/06       start group slides
