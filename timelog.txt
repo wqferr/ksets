@@ -75,3 +75,5 @@
 
 01/06       1h30min     start group slides
             30min       work on slides
+
+02/06       30min       start slides explaining different K sets
