@@ -79,3 +79,5 @@
 02/06       30min       start slides explaining different K sets
             1h30min     finish slides on K0-K2, start K3
             15min       finish slide on K3
+
+05/06       1h30min     finish first version of slides
