@@ -82,7 +82,7 @@ public class KIII implements Serializable {
 		this.step(perturbed, 1);
 		this.step(emptyArray, Config.rest*4);
 	}
-	
+
 	public double[][][] getHistory() {
 		double[][][] history = new double[k3.length][][];
 		
@@ -135,7 +135,7 @@ public class KIII implements Serializable {
 	public double[] getOutput() {
 		return k3[this.outputLayer].getActivationStd();
 	}
-	
+
 	public double[] getWeights(int layer) {
 		return k3[layer].getWeights();
 	}

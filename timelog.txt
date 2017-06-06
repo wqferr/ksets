@@ -83,3 +83,4 @@
 05/06       1h30min     finish first version of slides
 
 06/06       20min       revise slide on K0 through K2
+            1h40min     code to create images on different k set behaviour
