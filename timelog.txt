@@ -86,3 +86,5 @@
             1h40min     code to create images on different k set behaviour
             1h          create behaviour graphs for each of the k sets up to k3
             40min       insert images in slides
+
+07/06       30min       polish up slides
