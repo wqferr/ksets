@@ -10,7 +10,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 
 public class GuiMainWindow {
 
@@ -223,6 +222,18 @@ public class GuiMainWindow {
 		gbc_txtDataset.gridx = 2;
 		gbc_txtDataset.gridy = 2;
 		frame.getContentPane().add(txtDataset, gbc_txtDataset);
+		txtDataset.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					EventQueue.invokeLater(
+                        () -> {
+                            txtOutput.requestFocusInWindow();
+                        }
+					);
+				}
+			}
+		});
 		txtDataset.setColumns(10);
 
 		JLabel lblOutput = new JLabel("Output:");
@@ -259,12 +270,12 @@ public class GuiMainWindow {
 						showError(ex);
 					}
 					EventQueue.invokeLater(
-							() -> {
-							    waitDialog.dispose();
-								frame.toFront();
-								frame.repaint();
-								JOptionPane.showMessageDialog(frame, "Processing complete");
-							}
+                        () -> {
+                            waitDialog.dispose();
+                            frame.toFront();
+                            frame.repaint();
+                            JOptionPane.showMessageDialog(frame, "Processing complete");
+                        }
 					);
                 });
 				t.setRepeats(false);
@@ -277,6 +288,20 @@ public class GuiMainWindow {
 		gbc_btnRun.gridx = 2;
 		gbc_btnRun.gridy = 4;
 		frame.getContentPane().add(btnRun, gbc_btnRun);
+
+
+		txtOutput.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					EventQueue.invokeLater(
+                        () -> {
+                            btnRun.doClick();
+                        }
+					);
+				}
+			}
+		});
 
 		Component rigidArea_1 = Box.createRigidArea(new Dimension(20, 20));
 		GridBagConstraints gbc_rigidArea_1 = new GridBagConstraints();
@@ -429,12 +454,12 @@ public class GuiMainWindow {
 					showError(ex);
 				}
 				EventQueue.invokeLater(
-						() -> {
-							waitDialog.dispose();
-							frame.toFront();
-							frame.repaint();
-							JOptionPane.showMessageDialog(frame, "Training complete");
-						}
+                    () -> {
+                        waitDialog.dispose();
+                        frame.toFront();
+                        frame.repaint();
+                        JOptionPane.showMessageDialog(frame, "Training complete");
+                    }
 				);
 			});
 			t.setRepeats(false);
