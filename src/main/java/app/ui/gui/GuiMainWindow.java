@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 public class GuiMainWindow {
 
@@ -249,11 +250,25 @@ public class GuiMainWindow {
 				if (!checkKsetOpened())
 				    return;
 
-                try {
-                    cmd.RUN_NETWORK.execute(txtDataset.getText(), txtOutput.getText());
-                } catch (IllegalArgumentException ex) {
-                    showError(ex);
-                }
+				JDialog waitDialog = showWaitDialog();
+
+				Timer t = new Timer(100, actionEvent -> {
+					try {
+						cmd.RUN_NETWORK.execute(txtDataset.getText(), txtOutput.getText());
+					} catch (IllegalArgumentException ex) {
+						showError(ex);
+					}
+					EventQueue.invokeLater(
+							() -> {
+							    waitDialog.dispose();
+								frame.toFront();
+								frame.repaint();
+								JOptionPane.showMessageDialog(frame, "Processing complete");
+							}
+					);
+                });
+				t.setRepeats(false);
+				t.start();
 			}
 		);
 		GridBagConstraints gbc_btnRun = new GridBagConstraints();
@@ -378,6 +393,7 @@ public class GuiMainWindow {
 		JPanel pane = new JPanel(new GridLayout(0, 2));
 
 		JTextField txtTrainDataset = new JTextField();
+		txtTrainDataset.addHierarchyListener(requestFocusOnShow);
 
 		for (int i = 0; i < boxes.length; i++) {
 			boxes[i] = new JCheckBox();
@@ -402,12 +418,27 @@ public class GuiMainWindow {
 			for (int i = 0; i < boxes.length; i++)
 				layerTrain[i+1] = String.valueOf(boxes[i].isSelected());
 
-			try {
-				cmd.SET_PARAM.execute(layerTrain);
-				cmd.TRAIN_NETWORK.execute(txtTrainDataset.getText());
-			} catch (IllegalArgumentException ex) {
-			    showError(ex);
-			}
+			final JDialog waitDialog = showWaitDialog();
+
+			// Wait 100 ms so Swing has time to draw the dialog
+			Timer t = new Timer(100, actionEvent -> {
+				try {
+					cmd.SET_PARAM.execute(layerTrain);
+					cmd.TRAIN_NETWORK.execute(txtTrainDataset.getText());
+				} catch (IllegalArgumentException ex) {
+					showError(ex);
+				}
+				EventQueue.invokeLater(
+						() -> {
+							waitDialog.dispose();
+							frame.toFront();
+							frame.repaint();
+							JOptionPane.showMessageDialog(frame, "Training complete");
+						}
+				);
+			});
+			t.setRepeats(false);
+			t.start();
 		}
 	}
 
@@ -436,10 +467,7 @@ public class GuiMainWindow {
 
 		g.gridy++;
 		panel.add(new JLabel("Detecting instability: " + cmd.kset.getDetectInstability()), g);
-//
-//		g.gridy++;
-//		panel.add(new JLabel("Layer details"));
-//
+
 		//<editor-fold desc="Component init & layout">
 		for (int i = 0; i < txtCreateModelLayers.length; i++) {
 			g.gridy++;
@@ -582,13 +610,31 @@ public class GuiMainWindow {
 		JOptionPane.showMessageDialog(frame, "No kset loaded");
 		return false;
 	}
-	
-	private void showMessage(@NotNull String title, @NotNull String message) {
-		JOptionPane.showMessageDialog(frame, message, title, JOptionPane.PLAIN_MESSAGE);
-	}
 
 	private void showError(@NotNull Exception e) {
 	    JOptionPane.showMessageDialog(frame, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+	}
+
+	private JDialog showWaitDialog() {
+	    final JDialog dialog = new JDialog(frame);
+	    dialog.setTitle("Please wait");
+	    dialog.setModal(false);
+	    dialog.setContentPane(
+			new JOptionPane(
+					"This might take a while",
+					JOptionPane.WARNING_MESSAGE,
+                    JOptionPane.DEFAULT_OPTION,
+					null,
+					new Object[] {},
+					null));
+
+	    dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+	    dialog.pack();
+	    dialog.setResizable(false);
+
+		dialog.setLocationRelativeTo(frame);
+        dialog.setVisible(true);
+		return dialog;
 	}
 
 }

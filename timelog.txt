@@ -88,3 +88,4 @@
             40min       insert images in slides
 
 07/06       30min       polish up slides
+            1h15min     add popups when starting and finishing training/running
