@@ -255,7 +255,7 @@ public class GuiMainWindow {
 		frame.getContentPane().add(txtOutput, gbc_txtOutput);
 		txtOutput.setColumns(10);
 		
-		JButton btnRun = new JButton("Run");
+		final JButton btnRun = new JButton("Run");
 		btnRun.addActionListener(
 			ev -> {
 				if (!checkKsetOpened())
@@ -293,13 +293,8 @@ public class GuiMainWindow {
 		txtOutput.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					EventQueue.invokeLater(
-                        () -> {
-                            btnRun.doClick();
-                        }
-					);
-				}
+				if (e.getKeyCode() == KeyEvent.VK_ENTER)
+					EventQueue.invokeLater(btnRun::doClick);
 			}
 		});
 

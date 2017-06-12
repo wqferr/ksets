@@ -35,14 +35,14 @@ public class Application {
             }
         } else {
             EventQueue.invokeLater(
-                    () -> {
-                        try {
-                            GuiMainWindow window = new GuiMainWindow();
-                            window.frame.setVisible(true);
-                        } catch (Exception e) {
-                            System.err.printf("Error initializing window: %s", e.getMessage());
-                        }
+                () -> {
+                    try {
+                        GuiMainWindow window = new GuiMainWindow();
+                        window.frame.setVisible(true);
+                    } catch (Exception e) {
+                        System.err.printf("Error initializing window: %s", e.getMessage());
                     }
+                }
             );
         }
     }
