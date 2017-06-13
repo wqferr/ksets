@@ -92,3 +92,4 @@
             20min       move to next text field on main window on enter press
 
 13/06       1h          formulate evaluation procedure
+            1h          review presentation
