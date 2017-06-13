@@ -1,0 +1,16 @@
+Antes de iniciar o experimento, gerar dados com o comando
+    python gendata.py
+
+Em qualquer ponto do procedimento, pode-se consultar a referência da ferramenta
+na opção Help->Reference.
+Durante o procedimento, evitaremos diálogo (exceto por questões de tradução)
+a fim de avaliar também a seção de referência da ferramenta.
+
+1. Abrir a ferramenta com o comando
+    java -jar ksets.jar
+2. Criar um novo modelo com camadas (2, 8, 1)
+3. Alterar a taxa de aprendizado da camada 2 para metade do valor default
+4. Treinar apenas a segunda camada com o arquivo train.csv
+5. Processar o arquivo test.csv e armazenar a saída em out.csv
+6. [Opcional] Verificar o resultado da aplicação com o comando
+    python graph.py test.csv out.csv

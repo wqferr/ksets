@@ -90,3 +90,5 @@
 07/06       30min       polish up slides
             1h15min     add popups when starting and finishing training/running
             20min       move to next text field on main window on enter press
+
+13/06       1h          formulate evaluation procedure
