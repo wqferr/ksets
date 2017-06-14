@@ -15,3 +15,5 @@ a fim de avaliar também a seção de referência da ferramenta.
 5. Processar o arquivo test.csv e armazenar a saída em out.csv
 6. [Opcional] Verificar o resultado da aplicação com o comando
     python graph.py test.csv out.csv
+7. Responder o formulário em
+    http://bit.ly/2rUaq7Z
