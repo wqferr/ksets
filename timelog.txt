@@ -93,3 +93,5 @@
 
 13/06       1h          formulate evaluation procedure
             1h          review presentation
+
+14/06       40min       minor revisions to presentation
