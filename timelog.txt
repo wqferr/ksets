@@ -97,3 +97,5 @@
 14/06       40min       minor revisions to presentation
 
 10/07       1h40min     initial main screen prototype with Pencil
+
+14/07       1h          minor tweaks and create popup windows in Pencil
