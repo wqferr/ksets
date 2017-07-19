@@ -105,3 +105,4 @@
 19/07       4h          finish main screen v1
             30min       fix error on startup
             30min       organize code
+            40min       misc tests

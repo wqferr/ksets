@@ -24,11 +24,11 @@
       <Region prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="15.0" styleClass="box" stylesheets="@style.css" GridPane.columnIndex="1" GridPane.rowIndex="2">
          <children>
-            <Button fx:id="btnTrain" mnemonicParsing="false" prefWidth="110.0" text="Train">
+            <Button fx:id="btnTrain" mnemonicParsing="false" prefWidth="110.0" text="Train" onAction="#test">
                <font>
                   <Font size="14.0" />
                </font></Button>
-            <Button fx:id="btnSimulate" mnemonicParsing="false" prefWidth="110.0" text="Simulate">
+            <Button fx:id="btnSimulate" mnemonicParsing="false" prefWidth="110.0" text="Simulate" onAction="#notImplemented">
                <font>
                   <Font size="14.0" />
                </font></Button>
@@ -51,17 +51,17 @@
             <Insets top="30.0" />
          </padding>
          <children>
-            <Button fx:id="btnCreate" mnemonicParsing="false" prefWidth="110.0" text="Create">
+            <Button fx:id="btnCreate" mnemonicParsing="false" prefWidth="110.0" text="Create" onAction="#notImplemented">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="btnSave" mnemonicParsing="false" prefWidth="110.0" text="Save">
+            <Button fx:id="btnSave" mnemonicParsing="false" prefWidth="110.0" text="Save" onAction="#notImplemented">
                <font>
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="btnLoad" mnemonicParsing="false" prefWidth="110.0" text="Load">
+            <Button fx:id="btnLoad" mnemonicParsing="false" prefWidth="110.0" text="Load" onAction="#notImplemented">
                <font>
                   <Font size="14.0" />
                </font>
@@ -73,7 +73,7 @@
             <Insets />
          </GridPane.margin>
          <children>
-            <HBox fx:id="paneModelLayers" alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+            <HBox fx:id="paneModelLayers" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false">
                <children>
                   <StackPane layoutX="186.0" layoutY="10.0">
                      <children>
@@ -253,7 +253,7 @@
                   </StackPane>
                </children>
             </HBox>
-            <VBox fx:id="paneNoModelLoaded" alignment="CENTER" visible="false">
+            <VBox fx:id="paneNoModelLoaded" alignment="CENTER" visible="true">
                <children>
                   <Label text="No model loaded">
                      <font>
@@ -277,11 +277,11 @@
          </java.util.ArrayList>
       </fx:define>
       <fx:define>
-          <java.util.ArrayList fx:id="paneOutLayerArrows">
-              <fx:reference source="paneOut0" />
-              <fx:reference source="paneOut1" />
-              <fx:reference source="paneOut2" />
-          </java.util.ArrayList>
+         <java.util.ArrayList fx:id="paneOutLayerArrows">
+            <fx:reference source="paneOut0" />
+            <fx:reference source="paneOut1" />
+            <fx:reference source="paneOut2" />
+         </java.util.ArrayList>
       </fx:define>
    </children>
 </GridPane>

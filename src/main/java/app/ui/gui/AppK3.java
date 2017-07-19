@@ -7,7 +7,6 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL;
 
 public class AppK3 extends Application {
 
@@ -31,6 +30,7 @@ public class AppK3 extends Application {
             pane = load("view/MainWindow.fxml");
         } catch (IOException e) {
             e.printStackTrace();
+            primaryStage.close();
             return;
         }
 

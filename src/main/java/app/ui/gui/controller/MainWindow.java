@@ -1,14 +1,20 @@
 package app.ui.gui.controller;
 
+import app.ui.text.TextInterpreter;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import java.util.List;
+import java.util.Optional;
 
 public class MainWindow {
+
+    private TextInterpreter interpreter;
 
     @FXML
     public Label lbLayer0;
@@ -36,11 +42,45 @@ public class MainWindow {
     private List<Pane> paneOutLayerArrows;
 
     @FXML
-    public void initialize() {
-        paneNoModelLoaded.setVisible(false);
-        paneModelLayers.setVisible(true);
-        lbLayerSizes.get(0).setText("3 Nodes");
-        paneOutLayerArrows.get(0).setVisible(true);
+    private void initialize() {
+        interpreter = new TextInterpreter();
+    }
+
+    @FXML
+    private void notImplemented(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("Not implemented");
+        alert.setContentText("Not implemented yet");
+
+        alert.showAndWait();
+    }
+
+    @FXML
+    private void test(ActionEvent event) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+
+        alert.setHeaderText("0");
+
+        // dont do this, overrides buttons
+        //VBox content = new VBox();
+        //for (int i = 0; i < 5; i++)
+        //    content.getChildren().add(new Label("label " + i));
+
+        //DialogPane pane = new DialogPane();
+        //pane.setContent(content);
+
+        //alert.setDialogPane(pane);
+        alert.setContentText("1\n2\n3");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        System.out.println("result.isPresent() = " + result.isPresent());
+        System.out.println("result.get() == ButtonType.OK = " + (result.get() == ButtonType.OK));
+    }
+
+    private void setModelLoaded(boolean loaded) {
+        paneModelLayers.setVisible(loaded);
+        paneNoModelLoaded.setVisible(!loaded);
     }
 
 }
