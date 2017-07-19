@@ -104,3 +104,4 @@
                         faster. Besides most of it is already done)
 19/07       4h          finish main screen v1
             30min       fix error on startup
+            30min       organize code

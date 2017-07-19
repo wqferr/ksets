@@ -30,7 +30,7 @@ public class AppK3 extends Application {
         try {
             pane = load("view/MainWindow.fxml");
         } catch (IOException e) {
-            System.err.println("deu ruim");
+            e.printStackTrace();
             return;
         }
 

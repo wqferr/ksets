@@ -2,12 +2,10 @@ package app.ui.gui.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import org.junit.FixMethodOrder;
+import javafx.scene.layout.VBox;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MainWindow {
@@ -26,16 +24,23 @@ public class MainWindow {
     @FXML
     public Pane paneOut2;
 
-    private Label[] lbLayerSizes;
-    private Pane[] paneOutLayerArrows;
+    @FXML
+    public HBox paneModelLayers;
+    @FXML
+    public VBox paneNoModelLoaded;
+
+
+    @FXML
+    private List<Label> lbLayerSizes;
+    @FXML
+    private List<Pane> paneOutLayerArrows;
 
     @FXML
     public void initialize() {
-        lbLayerSizes = new Label[] {lbLayer0, lbLayer1, lbLayer2};
-        paneOutLayerArrows = new Pane[] {paneOut0, paneOut1, paneOut2};
-        lbLayerSizes[0].setText("3 Nodes");
-        for (Pane p : paneOutLayerArrows)
-            p.setVisible(true);
+        paneNoModelLoaded.setVisible(false);
+        paneModelLayers.setVisible(true);
+        lbLayerSizes.get(0).setText("3 Nodes");
+        paneOutLayerArrows.get(0).setVisible(true);
     }
 
 }

@@ -1,0 +1,5 @@
+
+.box {
+    -fx-border-color: black;
+    -fx-border-insets: 2px;
+}
