@@ -1,4 +1,4 @@
-package app.ui.gui;
+package app.ui.gui.old;
 
 import app.ui.text.TextInterpreter;
 import com.sun.istack.internal.NotNull;
@@ -11,7 +11,8 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 
-public class GuiMainWindow {
+@Deprecated
+public class GuiMainWindowOld {
 
 	//<editor-fold desc="UI persistent components">
 	public JFrame frame;
@@ -43,7 +44,7 @@ public class GuiMainWindow {
 		}
 	};
 
-	public GuiMainWindow() {
+	public GuiMainWindowOld() {
 		initialize();
 	}
 

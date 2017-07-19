@@ -99,3 +99,6 @@
 10/07       1h40min     initial main screen prototype with Pencil
 
 14/07       1h          minor tweaks and create popup windows in Pencil
+
+19/07       1h          start migrating to JavaFX (will be able to code much
+                        faster. Besides most of it is already done)

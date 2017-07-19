@@ -1,6 +1,5 @@
-package app;
+package app.ui.gui.old;
 
-import app.ui.gui.GuiMainWindow;
 import app.ui.text.TextInterpreter;
 
 import java.awt.*;
@@ -9,7 +8,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.NoSuchElementException;
 
-public class Application {
+@Deprecated
+public class ApplicationOld {
     public static void main(String[] args) {
         boolean textMode = false;
         for (String arg : args) {
@@ -37,7 +37,7 @@ public class Application {
             EventQueue.invokeLater(
                 () -> {
                     try {
-                        GuiMainWindow window = new GuiMainWindow();
+                        GuiMainWindowOld window = new GuiMainWindowOld();
                         window.frame.setVisible(true);
                     } catch (Exception e) {
                         System.err.printf("Error initializing window: %s", e.getMessage());
