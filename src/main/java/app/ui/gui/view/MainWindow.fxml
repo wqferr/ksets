@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<GridPane alignment="center" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.ui.gui.controller.MainWindow">
+   <columnConstraints>
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+      <RowConstraints />
+   </rowConstraints>
+   <children>
+      <Region fx:id="rgnModelView" prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2147483647" />
+      <Region prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
+      <Region prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+      <Region prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="15.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+         <children>
+            <Button fx:id="btnTrain" mnemonicParsing="false" prefWidth="110.0" text="Train">
+               <font>
+                  <Font size="14.0" />
+               </font></Button>
+            <Button fx:id="btnSimulate" mnemonicParsing="false" prefWidth="110.0" text="Simulate">
+               <font>
+                  <Font size="14.0" />
+               </font></Button>
+         </children>
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <padding>
+            <Insets top="30.0" />
+         </padding>
+      </VBox>
+      <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="15.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin>
+         <padding>
+            <Insets top="30.0" />
+         </padding>
+         <children>
+            <Button fx:id="btnCreate" mnemonicParsing="false" prefWidth="110.0" text="Create">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="btnSave" mnemonicParsing="false" prefWidth="110.0" text="Save">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+            <Button fx:id="btnLoad" mnemonicParsing="false" prefWidth="110.0" text="Load">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Button>
+         </children>
+      </VBox>
+      <HBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnSpan="2147483647">
+         <children>
+            <StackPane layoutX="186.0" layoutY="10.0">
+               <children>
+                  <Line endX="45.0">
+                     <StackPane.margin>
+                        <Insets left="15.0" />
+                     </StackPane.margin>
+                  </Line>
+                  <Line endX="20.0" startY="10.0">
+                     <StackPane.margin>
+                        <Insets left="42.0" top="12.0" />
+                     </StackPane.margin>
+                  </Line>
+                  <Line endX="20.0" endY="10.0">
+                     <StackPane.margin>
+                        <Insets bottom="8.0" left="42.0" />
+                     </StackPane.margin>
+                  </Line>
+                  <Pane>
+                     <children>
+                        <Line layoutX="15.0" layoutY="9.0" startY="80.0" />
+                        <Circle fill="#666666" layoutX="15.0" layoutY="90.0" radius="4.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Label layoutX="27.0" layoutY="41.0" text="in" />
+                     </children>
+                  </Pane>
+               </children>
+               <padding>
+                  <Insets top="20.0" />
+               </padding>
+            </StackPane>
+            <StackPane>
+               <children>
+                  <Circle fill="WHITE" radius="60.0" stroke="BLACK" strokeType="INSIDE" />
+                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label text="Layer 0">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="lbLayer0" text="0 Nodes">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets top="20.0" />
+               </padding>
+            </StackPane>
+            <StackPane>
+               <children>
+                  <Line endX="60.0" />
+                  <Line endX="20.0" startY="10.0">
+                     <StackPane.margin>
+                        <Insets left="42.0" top="12.0" />
+                     </StackPane.margin>
+                  </Line>
+                  <Line endX="20.0" endY="10.0">
+                     <StackPane.margin>
+                        <Insets bottom="8.0" left="42.0" />
+                     </StackPane.margin>
+                  </Line>
+                  <Pane fx:id="paneOut0" visible="false">
+                     <children>
+                        <Line layoutX="15.0" layoutY="9.0" startY="80.0" />
+                        <Line endX="10.0" endY="20.0" layoutX="16.0" layoutY="10.0" />
+                        <Line endY="20.0" layoutX="4.0" layoutY="10.0" startX="10.0" />
+                        <Circle fill="#666666" layoutX="15.0" layoutY="90.0" radius="4.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Label layoutX="23.0" layoutY="41.0" text="out" />
+                     </children>
+                  </Pane>
+               </children>
+               <padding>
+                  <Insets top="20.0" />
+               </padding>
+            </StackPane>
+            <StackPane>
+               <children>
+                  <Circle fill="WHITE" radius="60.0" stroke="BLACK" strokeType="INSIDE" />
+                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label text="Layer 1">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="lbLayer1" text="0 Nodes">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets top="20.0" />
+               </padding>
+            </StackPane>
+            <StackPane>
+               <children>
+                  <Line endX="60.0" />
+                  <Line endX="20.0" startY="10.0">
+                     <StackPane.margin>
+                        <Insets left="42.0" top="12.0" />
+                     </StackPane.margin>
+                  </Line>
+                  <Line endX="20.0" endY="10.0">
+                     <StackPane.margin>
+                        <Insets bottom="8.0" left="42.0" />
+                     </StackPane.margin>
+                  </Line>
+                  <Pane fx:id="paneOut1" visible="false">
+                     <children>
+                        <Line layoutX="15.0" layoutY="9.0" startY="80.0" />
+                        <Line endX="10.0" endY="20.0" layoutX="16.0" layoutY="10.0" />
+                        <Line endY="20.0" layoutX="4.0" layoutY="10.0" startX="10.0" />
+                        <Circle fill="#666666" layoutX="15.0" layoutY="90.0" radius="4.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Label layoutX="18.0" layoutY="41.0" text="out" />
+                     </children>
+                  </Pane>
+               </children>
+               <padding>
+                  <Insets top="20.0" />
+               </padding>
+            </StackPane>
+            <StackPane layoutX="310.0" layoutY="10.0">
+               <children>
+                  <Circle fill="WHITE" radius="60.0" stroke="BLACK" strokeType="INSIDE" />
+                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Label text="Layer 2">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="lbLayer2" text="0 Nodes">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets top="20.0" />
+               </padding>
+            </StackPane>
+            <StackPane layoutX="402.0" layoutY="10.0">
+               <children>
+                  <Line endX="15.0">
+                     <StackPane.margin>
+                        <Insets right="32.0" />
+                     </StackPane.margin>
+                  </Line>
+                  <Pane>
+                     <children>
+                        <Line layoutX="15.0" layoutY="9.0" startY="80.0" />
+                        <Line endX="10.0" endY="20.0" layoutX="16.0" layoutY="10.0" />
+                        <Line endY="20.0" layoutX="4.0" layoutY="10.0" startX="10.0" />
+                        <Circle fill="#666666" layoutX="15.0" layoutY="90.0" radius="4.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Label layoutX="18.0" layoutY="41.0" text="out" />
+                     </children>
+                  </Pane>
+               </children>
+               <padding>
+                  <Insets top="20.0" />
+               </padding>
+            </StackPane>
+         </children>
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin></HBox>
+   </children>
+</GridPane>

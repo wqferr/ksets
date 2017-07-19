@@ -26,7 +26,7 @@ public class KIII implements Serializable {
 	}
 	
 	/**
-	 * Create a new KIII with the default configurations from the old matlab implementation.
+	 * Create a new KIII with the default configurations from the _old matlab implementation.
 	 * @param size
 	 */
 	public KIII(int size) {

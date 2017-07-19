@@ -1,4 +1,4 @@
-package app.ui.gui.old;
+package app.ui.gui._old;
 
 import app.ui.text.TextInterpreter;
 
