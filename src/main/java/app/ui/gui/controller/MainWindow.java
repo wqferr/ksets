@@ -7,6 +7,7 @@ import javafx.scene.layout.StackPane;
 import org.junit.FixMethodOrder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainWindow {
@@ -33,7 +34,8 @@ public class MainWindow {
         lbLayerSizes = new Label[] {lbLayer0, lbLayer1, lbLayer2};
         paneOutLayerArrows = new Pane[] {paneOut0, paneOut1, paneOut2};
         lbLayerSizes[0].setText("3 Nodes");
-        paneOut2.setVisible(true);
+        for (Pane p : paneOutLayerArrows)
+            p.setVisible(true);
     }
 
 }

@@ -230,18 +230,18 @@
             </StackPane>
             <StackPane layoutX="402.0" layoutY="10.0">
                <children>
-                  <Line endX="15.0">
-                     <StackPane.margin>
-                        <Insets right="32.0" />
-                     </StackPane.margin>
-                  </Line>
-                  <Pane>
+                  <Pane fx:id="paneOut2" prefWidth="200.0" visible="false">
                      <children>
-                        <Line layoutX="15.0" layoutY="9.0" startY="80.0" />
-                        <Line endX="10.0" endY="20.0" layoutX="16.0" layoutY="10.0" />
-                        <Line endY="20.0" layoutX="4.0" layoutY="10.0" startX="10.0" />
-                        <Circle fill="#666666" layoutX="15.0" layoutY="90.0" radius="4.0" stroke="BLACK" strokeType="INSIDE" />
-                        <Label layoutX="18.0" layoutY="41.0" text="out" />
+                        <Line endX="15.0" endY="90.0" startY="90.0" />
+                        <Pane>
+                           <children>
+                              <Line layoutX="15.0" layoutY="9.0" startY="80.0" />
+                              <Line endX="10.0" endY="20.0" layoutX="16.0" layoutY="10.0" />
+                              <Line endY="20.0" layoutX="4.0" layoutY="10.0" startX="10.0" />
+                              <Circle fill="#666666" layoutX="15.0" layoutY="90.0" radius="4.0" stroke="BLACK" strokeType="INSIDE" />
+                              <Label layoutX="18.0" layoutY="41.0" text="out" />
+                           </children>
+                        </Pane>
                      </children>
                   </Pane>
                </children>
