@@ -24,7 +24,7 @@
       <Region prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="15.0" styleClass="box" stylesheets="@style.css" GridPane.columnIndex="1" GridPane.rowIndex="2">
          <children>
-            <Button fx:id="btnTrain" mnemonicParsing="false" prefWidth="110.0" text="Train" onAction="#test">
+            <Button fx:id="btnTrain" mnemonicParsing="false" prefWidth="110.0" text="Train" onAction="#handleTrain">
                <font>
                   <Font size="14.0" />
                </font></Button>

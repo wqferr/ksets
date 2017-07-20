@@ -13,10 +13,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -107,11 +104,13 @@ public class MainWindow {
         GridPane pane = new GridPane();
         List<TextField> txtLayerSizes = new ArrayList<>();
 
+        // TODO add output layer as option
         for (int i = 0; i < 3; i++) {
             txtLayerSizes.add(new TextField());
             pane.addRow(i, new Label(String.format("Layer %d size:", i)), txtLayerSizes.get(i));
         }
         Platform.runLater(txtLayerSizes.get(0)::requestFocus);
+        // FIXME add title to dialog
         Dialog<Boolean> dialog = createDialog("title", pane);
 
         boolean done = false;
@@ -176,6 +175,56 @@ public class MainWindow {
                 showErrorDialog("Error loading model from file " + file.getAbsolutePath());
             }
         }
+    }
+
+    @FXML
+    private void handleTrain() {
+        if (!checkKset())
+            return;
+
+        dataChooser.setTitle("Open training dataset");
+        File dataFile = dataChooser.showOpenDialog(stage);
+        if (dataFile == null || !dataFile.exists())
+            return;
+
+        GridPane pane = new GridPane();
+        List<CheckBox> cbkTrainLayer = new ArrayList<>();
+
+        for (int i = 0; i < 3; i++) {
+            cbkTrainLayer.add(new CheckBox(String.format("Train layer %d", i)));
+            pane.addRow(i, cbkTrainLayer.get(i));
+            // TODO add learning rate text fields
+        }
+
+        Dialog<Boolean> dialog = createDialog("Layerwise training", pane);
+        boolean doTrain = dialog.showAndWait().orElse(false);
+        if (!doTrain)
+            return;
+
+        List<String> trainLayers = cbkTrainLayer.stream()
+                .map(CheckBox::isSelected)
+                .map(String::valueOf)
+                .collect(Collectors.toList());
+        String cmd = trainLayers.stream().reduce(
+                "set layer_training",
+                (s, s2) -> String.join(" ", s, s2)
+        );
+
+        try {
+            interpreter.execute(cmd);
+        } catch (IllegalArgumentException exc) {
+            showErrorDialog(exc.getMessage());
+            return;
+        }
+
+        try {
+            interpreter.execute("train " + dataFile.getPath());
+        } catch (IllegalArgumentException exc) {
+            showErrorDialog(exc.getMessage());
+            return;
+        }
+
+        showMessage("Training finished", "Training process completed");
     }
 
     private boolean checkKset() {

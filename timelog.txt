@@ -112,3 +112,4 @@
             30min       add error message and loop if invalid input
             30min       add "save" functionality
             20min       add "load" functionality
+            30min       add basic "train" functionality

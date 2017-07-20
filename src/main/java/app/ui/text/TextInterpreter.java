@@ -301,6 +301,9 @@ public class TextInterpreter {
 		} catch (IOException e) {
 			return e;
 		}
+
+		if (data[0].length != kset.getLayer(0).getSize())
+			return new IllegalArgumentException("Dataset width does not match layer 0 size");
 		
 		kset.train(data);
 		return null;
