@@ -56,7 +56,7 @@
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="btnSave" mnemonicParsing="false" prefWidth="110.0" text="Save" onAction="#notImplemented">
+            <Button fx:id="btnSave" mnemonicParsing="false" prefWidth="110.0" text="Save" onAction="#handleSaveModel">
                <font>
                   <Font size="14.0" />
                </font>
@@ -281,6 +281,13 @@
             <fx:reference source="paneOut0" />
             <fx:reference source="paneOut1" />
             <fx:reference source="paneOut2" />
+         </java.util.ArrayList>
+      </fx:define>
+      <fx:define>
+         <java.util.ArrayList fx:id="btnKsetDependent">
+            <fx:reference source="btnTrain" />
+            <fx:reference source="btnSimulate" />
+            <fx:reference source="btnSave" />
          </java.util.ArrayList>
       </fx:define>
    </children>

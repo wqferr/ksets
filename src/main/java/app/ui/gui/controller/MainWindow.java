@@ -8,17 +8,20 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class MainWindow {
 
-    //private static final ButtonType CONFIRM_BTN = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-
     private TextInterpreter interpreter;
+    private Stage stage;
 
     @FXML
     public Label lbLayer0;
@@ -44,10 +47,13 @@ public class MainWindow {
     private List<Label> lbLayerSizes;
     @FXML
     private List<Pane> paneOutLayerArrows;
+    @FXML
+    private List<Button> btnKsetDependent;
 
     @FXML
     private void initialize() {
         interpreter = new TextInterpreter();
+        setModelLoaded(false);
     }
 
     @FXML
@@ -109,9 +115,9 @@ public class MainWindow {
                     );
                     try {
                         interpreter.execute(cmd);
-                        showMessage("Success", "Model successfully created");
                         done = true;
                         updateModelDisplay();
+                        showMessage("Success", "Model successfully created");
                     } catch (NoSuchElementException | IllegalArgumentException exc) {
                         showErrorDialog("Error creating model");
                     }
@@ -122,6 +128,32 @@ public class MainWindow {
                 done = true;
             }
         } while (!done);
+    }
+
+    @FXML
+    private void handleSaveModel() {
+        if (!checkKset())
+            return;
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Save model");
+        chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        chooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("KIII models (.k3)", "*.k3")
+        );
+        chooser.setInitialFileName("model.k3");
+        File file = chooser.showSaveDialog(stage);
+        if (file != null) {
+            try {
+                interpreter.execute("save " + file.getAbsolutePath());
+                showMessage("Success", "Model saved successfully");
+            } catch (IllegalArgumentException exc) {
+                showErrorDialog("Error saving model to file " + file.getAbsolutePath());
+            }
+        }
+    }
+
+    private boolean checkKset() {
+        return interpreter.kset != null;
     }
 
     private static void showMessage(String title, String content) {
@@ -179,6 +211,8 @@ public class MainWindow {
     private void setModelLoaded(boolean loaded) {
         paneModelLayers.setVisible(loaded);
         paneNoModelLoaded.setVisible(!loaded);
+
+        btnKsetDependent.forEach(button -> button.setDisable(!loaded));
     }
 
     private void updateModelDisplay() {
@@ -192,6 +226,10 @@ public class MainWindow {
             }
             paneOutLayerArrows.get(interpreter.kset.getOutputLayer()).setVisible(true);
         }
+    }
+
+    public void setStage(Stage s) {
+        stage = s;
     }
 
 }
