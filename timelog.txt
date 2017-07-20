@@ -106,3 +106,6 @@
             30min       fix error on startup
             30min       organize code
             40min       misc tests
+
+20/07       20min       add createDialog method
+            1h          add "create" functionality
