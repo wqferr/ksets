@@ -1,15 +1,21 @@
 package app.ui.gui.controller;
 
 import app.ui.text.TextInterpreter;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class MainWindow {
 
@@ -81,14 +87,73 @@ public class MainWindow {
 
     @FXML
     private void handleCreateModel() {
+        GridPane pane = new GridPane();
+        List<TextField> txtLayerSizes = new ArrayList<>();
+
+        for (int i = 0; i < 3; i++) {
+            txtLayerSizes.add(new TextField());
+            pane.addRow(i, new Label(String.format("Layer %d size:", i)), txtLayerSizes.get(i));
+        }
+        Platform.runLater(txtLayerSizes.get(0)::requestFocus);
+        Dialog<Boolean> dialog = createDialog("title", pane);
+
+        // Check if user pressed OK
+        boolean doCreate = dialog.showAndWait().orElse(false); // Default to canceling
+        if (doCreate) {
+            List<String> args = txtLayerSizes.stream()
+                    .map(textField -> textField.getText())
+                    .collect(Collectors.toList());
+            // If every arg is a positive integer
+            if (args.stream().allMatch(str -> checkInt(str, i -> i > 0))) {
+                // Concatenate args with "new"
+                String cmd = args.stream().reduce(
+                        "new",
+                        (s, s2) -> String.join(" ", s, s2)
+                );
+                try {
+                    interpreter.execute(cmd);
+                    // TODO show OK dialog
+                } catch (NoSuchElementException | IllegalArgumentException exc) {
+                    // TODO show error dialog
+                }
+            } else {
+                // TODO show error dialog
+            }
+        }
     }
 
-    private static Dialog createDialog(String title, Pane content) {
+    private boolean checkInt(String str, Predicate<Integer> predicate) {
+        if (str == null)
+            return false;
+        try {
+            int i = Integer.parseInt(str);
+            return predicate.test(i);
+        } catch (NumberFormatException exc) {
+            return false;
+        }
+    }
+
+    private Optional<Integer> toNonnegativeInteger(String str) {
+        if (str == null)
+            return Optional.empty();
+        try {
+            return Optional.of(Integer.valueOf(str));
+        } catch (NumberFormatException exc) {
+            return Optional.empty();
+        }
+    }
+
+    private static <R> Dialog<R> createDialog(String title, Pane content, Callback<ButtonType, R> converter) {
         Dialog dialog = new Dialog();
         dialog.setTitle(title);
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
         dialog.getDialogPane().setContent(content);
+        dialog.setResultConverter(converter);
         return dialog;
+    }
+
+    private static Dialog<Boolean> createDialog(String title, Pane content) {
+        return createDialog(title, content, (btnType) -> btnType == ButtonType.OK);
     }
 
     private void setModelLoaded(boolean loaded) {

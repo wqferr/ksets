@@ -51,7 +51,7 @@
             <Insets top="30.0" />
          </padding>
          <children>
-            <Button fx:id="btnCreate" mnemonicParsing="false" prefWidth="110.0" text="Create" onAction="#notImplemented">
+            <Button fx:id="btnCreate" mnemonicParsing="false" prefWidth="110.0" text="Create" onAction="#handleCreateModel">
                <font>
                   <Font size="14.0" />
                </font>
