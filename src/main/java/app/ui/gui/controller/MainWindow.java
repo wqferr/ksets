@@ -1,10 +1,9 @@
 package app.ui.gui.controller;
 
 import app.ui.text.TextInterpreter;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -13,6 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class MainWindow {
+
+    //private static final ButtonType CONFIRM_BTN = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
 
     private TextInterpreter interpreter;
 
@@ -47,7 +48,7 @@ public class MainWindow {
     }
 
     @FXML
-    private void notImplemented(ActionEvent event) {
+    private void notImplemented() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText("Not implemented");
@@ -57,7 +58,7 @@ public class MainWindow {
     }
 
     @FXML
-    private void test(ActionEvent event) {
+    private void test() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
 
         alert.setHeaderText("0");
@@ -76,6 +77,18 @@ public class MainWindow {
 
         System.out.println("result.isPresent() = " + result.isPresent());
         System.out.println("result.get() == ButtonType.OK = " + (result.get() == ButtonType.OK));
+    }
+
+    @FXML
+    private void handleCreateModel() {
+    }
+
+    private static Dialog createDialog(String title, Pane content) {
+        Dialog dialog = new Dialog();
+        dialog.setTitle(title);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+        dialog.getDialogPane().setContent(content);
+        return dialog;
     }
 
     private void setModelLoaded(boolean loaded) {
