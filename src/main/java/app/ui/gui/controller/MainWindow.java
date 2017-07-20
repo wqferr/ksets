@@ -10,10 +10,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -80,9 +77,6 @@ public class MainWindow {
         //alert.setDialogPane(pane);
         alert.setContentText("1\n2\n3");
         Optional<ButtonType> result = alert.showAndWait();
-
-        System.out.println("result.isPresent() = " + result.isPresent());
-        System.out.println("result.get() == ButtonType.OK = " + (result.get() == ButtonType.OK));
     }
 
     @FXML
@@ -97,32 +91,58 @@ public class MainWindow {
         Platform.runLater(txtLayerSizes.get(0)::requestFocus);
         Dialog<Boolean> dialog = createDialog("title", pane);
 
-        // Check if user pressed OK
-        boolean doCreate = dialog.showAndWait().orElse(false); // Default to canceling
-        if (doCreate) {
-            List<String> args = txtLayerSizes.stream()
-                    .map(textField -> textField.getText())
-                    .collect(Collectors.toList());
-            // If every arg is a positive integer
-            if (args.stream().allMatch(str -> checkInt(str, i -> i > 0))) {
-                // Concatenate args with "new"
-                String cmd = args.stream().reduce(
-                        "new",
-                        (s, s2) -> String.join(" ", s, s2)
-                );
-                try {
-                    interpreter.execute(cmd);
-                    // TODO show OK dialog
-                } catch (NoSuchElementException | IllegalArgumentException exc) {
-                    // TODO show error dialog
+        boolean done = false;
+
+        do { // Repeat until either canceled or a valid input is given
+            // Check if user pressed OK
+            boolean doCreate = dialog.showAndWait().orElse(false); // Default to canceling
+            if (doCreate) {
+                List<String> args = txtLayerSizes.stream()
+                        .map(textField -> textField.getText())
+                        .collect(Collectors.toList());
+                // If every arg is a positive integer
+                if (args.stream().allMatch(str -> checkInt(str, i -> i > 0))) {
+                    // Concatenate args with "new"
+                    String cmd = args.stream().reduce(
+                            "new",
+                            (s, s2) -> String.join(" ", s, s2)
+                    );
+                    try {
+                        interpreter.execute(cmd);
+                        showMessage("Success", "Model successfully created");
+                        done = true;
+                        updateModelDisplay();
+                    } catch (NoSuchElementException | IllegalArgumentException exc) {
+                        showErrorDialog("Error creating model");
+                    }
+                } else {
+                    showErrorDialog("Invalid layers size", "All field values must be positive integers");
                 }
             } else {
-                // TODO show error dialog
+                done = true;
             }
-        }
+        } while (!done);
     }
 
-    private boolean checkInt(String str, Predicate<Integer> predicate) {
+    private static void showMessage(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(content);
+        alert.showAndWait();
+    }
+
+    private static void showErrorDialog(String content) {
+        showErrorDialog("Error", content);
+    }
+
+    private static void showErrorDialog(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(content);
+        alert.showAndWait();
+    }
+
+    private static boolean checkInt(String str, Predicate<Integer> predicate) {
         if (str == null)
             return false;
         try {
@@ -159,6 +179,19 @@ public class MainWindow {
     private void setModelLoaded(boolean loaded) {
         paneModelLayers.setVisible(loaded);
         paneNoModelLoaded.setVisible(!loaded);
+    }
+
+    private void updateModelDisplay() {
+        if (interpreter.kset == null) {
+            setModelLoaded(false);
+        } else {
+            setModelLoaded(true);
+            for (int i = 0; i < 3; i++) {
+                lbLayerSizes.get(i).setText(interpreter.kset.getLayer(i).getSize() + " Nodes");
+                paneOutLayerArrows.get(i).setVisible(false);
+            }
+            paneOutLayerArrows.get(interpreter.kset.getOutputLayer()).setVisible(true);
+        }
     }
 
 }

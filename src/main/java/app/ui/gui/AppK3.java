@@ -24,7 +24,7 @@ public class AppK3 extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Hi");
+        primaryStage.setTitle("Freeman's KIII");
         Pane pane;
         try {
             pane = load("view/MainWindow.fxml");

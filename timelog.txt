@@ -109,3 +109,4 @@
 
 20/07       20min       add createDialog method
             1h          add "create" functionality
+            30min       add error message and loop if invalid input
