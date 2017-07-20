@@ -61,7 +61,7 @@
                   <Font size="14.0" />
                </font>
             </Button>
-            <Button fx:id="btnLoad" mnemonicParsing="false" prefWidth="110.0" text="Load" onAction="#notImplemented">
+            <Button fx:id="btnLoad" mnemonicParsing="false" prefWidth="110.0" text="Load" onAction="#handleLoadModel">
                <font>
                   <Font size="14.0" />
                </font>

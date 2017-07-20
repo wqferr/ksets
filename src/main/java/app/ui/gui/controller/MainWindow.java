@@ -13,8 +13,10 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -22,6 +24,9 @@ public class MainWindow {
 
     private TextInterpreter interpreter;
     private Stage stage;
+
+    private FileChooser modelChooser;
+    private FileChooser dataChooser;
 
     @FXML
     public Label lbLayer0;
@@ -54,6 +59,18 @@ public class MainWindow {
     private void initialize() {
         interpreter = new TextInterpreter();
         setModelLoaded(false);
+
+        modelChooser = new FileChooser();
+        modelChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        modelChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("KIII models (.k3)", "*.k3")
+        );
+
+        dataChooser = new FileChooser();
+        dataChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
+        dataChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("CSV File (*.csv)", "*.csv")
+        );
     }
 
     @FXML
@@ -134,20 +151,29 @@ public class MainWindow {
     private void handleSaveModel() {
         if (!checkKset())
             return;
-        FileChooser chooser = new FileChooser();
-        chooser.setTitle("Save model");
-        chooser.setInitialDirectory(new File(System.getProperty("user.dir")));
-        chooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("KIII models (.k3)", "*.k3")
-        );
-        chooser.setInitialFileName("model.k3");
-        File file = chooser.showSaveDialog(stage);
+        modelChooser.setTitle("Save model");
+        File file = modelChooser.showSaveDialog(stage);
         if (file != null) {
             try {
                 interpreter.execute("save " + file.getAbsolutePath());
                 showMessage("Success", "Model saved successfully");
             } catch (IllegalArgumentException exc) {
                 showErrorDialog("Error saving model to file " + file.getAbsolutePath());
+            }
+        }
+    }
+
+    @FXML
+    private void handleLoadModel() {
+        modelChooser.setTitle("Load model");
+        File file = modelChooser.showOpenDialog(stage);
+        if (file != null) {
+            try {
+                interpreter.execute("load " + file.getAbsolutePath());
+                updateModelDisplay();
+                showMessage("Success", "Model loaded successfully");
+            } catch (IllegalArgumentException exc) {
+                showErrorDialog("Error loading model from file " + file.getAbsolutePath());
             }
         }
     }
