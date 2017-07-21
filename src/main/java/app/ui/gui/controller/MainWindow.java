@@ -3,6 +3,7 @@ package app.ui.gui.controller;
 import app.ui.text.TextInterpreter;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -13,7 +14,10 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -188,12 +192,21 @@ public class MainWindow {
             return;
 
         GridPane pane = new GridPane();
+        pane.setHgap(20);
         List<CheckBox> cbkTrainLayer = new ArrayList<>();
+        List<TextField> txtLearningRates = new ArrayList<>();
 
         for (int i = 0; i < 3; i++) {
             cbkTrainLayer.add(new CheckBox(String.format("Train layer %d", i)));
-            pane.addRow(i, cbkTrainLayer.get(i));
-            // TODO add learning rate text fields
+            txtLearningRates.add(new TextField(String.valueOf(interpreter.kset.getLearningRate(i))));
+            Separator sep = new Separator(Orientation.VERTICAL);
+
+            pane.addRow(i,
+                    cbkTrainLayer.get(i),
+                    sep,
+                    new Label(String.format("Learning rate for layer %d:", i)),
+                    txtLearningRates.get(i)
+            );
         }
 
         Dialog<Boolean> dialog = createDialog("Layerwise training", pane);
@@ -201,13 +214,12 @@ public class MainWindow {
         if (!doTrain)
             return;
 
-        List<String> trainLayers = cbkTrainLayer.stream()
+        String cmd = cbkTrainLayer.stream()
                 .map(CheckBox::isSelected)
                 .map(String::valueOf)
-                .collect(Collectors.toList());
-        String cmd = trainLayers.stream().reduce(
-                "set layer_training",
-                (s, s2) -> String.join(" ", s, s2)
+                .reduce(
+                        "set layer_training",
+                        (s, s2) -> String.join(" ", s, s2)
         );
 
         try {
@@ -215,6 +227,18 @@ public class MainWindow {
         } catch (IllegalArgumentException exc) {
             showErrorDialog(exc.getMessage());
             return;
+        }
+
+        for (int i = 0; i < 3; i++) {
+            String rate = txtLearningRates.get(i).getText();
+            if (!rate.isEmpty() && checkFloat(rate, f -> f > 0)) {
+                // field not blank and valid learning rate
+                try {
+                    interpreter.execute(String.format("set learning_rate %d %s", i, rate));
+                } catch (IllegalArgumentException exc) {
+                    showErrorDialog(exc.getMessage());
+                }
+            }
         }
 
         try {
@@ -255,6 +279,17 @@ public class MainWindow {
         try {
             int i = Integer.parseInt(str);
             return predicate.test(i);
+        } catch (NumberFormatException exc) {
+            return false;
+        }
+    }
+
+    private static boolean checkFloat(String str, Predicate<Float> predicate) {
+        if (str == null)
+            return false;
+        try {
+            float f = Float.parseFloat(str);
+            return predicate.test(f);
         } catch (NumberFormatException exc) {
             return false;
         }
