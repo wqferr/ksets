@@ -115,3 +115,4 @@
             30min       add basic "train" functionality
             20min       add learning rate text fields for training
             10min       add "simulate" functionality
+            15min       minor tweaks to "create" dialog

@@ -2,6 +2,7 @@ package app.ui.gui.controller;
 
 import app.ui.text.TextInterpreter;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
@@ -108,14 +109,30 @@ public class MainWindow {
         GridPane pane = new GridPane();
         List<TextField> txtLayerSizes = new ArrayList<>();
 
-        // TODO add output layer as option
+        pane.setVgap(10);
+        pane.setHgap(10);
         for (int i = 0; i < 3; i++) {
             txtLayerSizes.add(new TextField());
             pane.addRow(i, new Label(String.format("Layer %d size:", i)), txtLayerSizes.get(i));
         }
+
+        pane.add(new Separator(Orientation.HORIZONTAL), 0, 3, 2, 1);
+
+        pane.addRow(4, new Label("Input layer:"), new Label("0"));
+
+        ChoiceBox choiceBox = new ChoiceBox<>(
+                FXCollections.observableArrayList("0", "1", "2")
+        );
+        choiceBox.setValue("2");
+
+        pane.addRow(
+                5,
+                new Label("Output layer:"),
+                choiceBox
+        );
+
         Platform.runLater(txtLayerSizes.get(0)::requestFocus);
-        // FIXME add title to dialog
-        Dialog<Boolean> dialog = createDialog("title", pane);
+        Dialog<Boolean> dialog = createDialog("Create model", pane);
 
         boolean done = false;
 
@@ -135,6 +152,7 @@ public class MainWindow {
                     );
                     try {
                         interpreter.execute(cmd);
+                        interpreter.execute(String.format("set output_layer %s", choiceBox.getValue()));
                         done = true;
                         updateModelDisplay();
                         showMessage("Success", "Model successfully created");
