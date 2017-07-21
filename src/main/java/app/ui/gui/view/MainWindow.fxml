@@ -28,7 +28,7 @@
                <font>
                   <Font size="14.0" />
                </font></Button>
-            <Button fx:id="btnSimulate" mnemonicParsing="false" prefWidth="110.0" text="Simulate" onAction="#notImplemented">
+            <Button fx:id="btnSimulate" mnemonicParsing="false" prefWidth="110.0" text="Simulate" onAction="#handleSimulate">
                <font>
                   <Font size="14.0" />
                </font></Button>

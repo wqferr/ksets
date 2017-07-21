@@ -251,6 +251,31 @@ public class MainWindow {
         showMessage("Training finished", "Training process completed");
     }
 
+    @FXML
+    private void handleSimulate() {
+        if (!checkKset())
+            return;
+
+        dataChooser.setTitle("Select input dataset");
+        File inputFile = dataChooser.showOpenDialog(stage);
+        if (inputFile == null || !inputFile.exists())
+            return;
+
+        dataChooser.setTitle("Select output data file");
+        File outputFile = dataChooser.showSaveDialog(stage);
+        if (outputFile == null)
+            return;
+
+        try {
+            interpreter.execute(String.format("run %s %s", inputFile.getPath(), outputFile.getPath()));
+        } catch (IllegalArgumentException exc) {
+            showErrorDialog(exc.getMessage());
+            return;
+        }
+
+        showMessage("Simulation finished", "Simulation process completed");
+    }
+
     private boolean checkKset() {
         return interpreter.kset != null;
     }
