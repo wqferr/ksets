@@ -121,3 +121,5 @@
 
 22/07       40min       draft reference
             1h40min     finish first versions of sections up to 2.2.1
+
+23/07       1h          work on reference guide
