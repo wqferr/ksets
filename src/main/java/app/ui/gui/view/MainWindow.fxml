@@ -32,6 +32,10 @@
                <font>
                   <Font size="14.0" />
                </font></Button>
+            <Button fx:id="btnHelp" mnemonicParsing="false" prefWidth="110.0" text="Help" onAction="#notImplemented">
+               <font>
+                  <Font size="14.0" />
+               </font></Button>
          </children>
          <GridPane.margin>
             <Insets />

@@ -123,3 +123,4 @@
             1h40min     finish first versions of sections up to 2.2.1
 
 23/07       1h          work on reference guide
+            10min       work on reference guide and add placeholder help button
