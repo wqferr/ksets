@@ -124,3 +124,5 @@
 
 23/07       1h          work on reference guide
             10min       work on reference guide and add placeholder help button
+
+24/07       30min       write on text interpreter
