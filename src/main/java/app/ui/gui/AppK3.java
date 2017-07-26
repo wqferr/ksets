@@ -4,9 +4,9 @@ import app.ui.gui.controller.MainWindow;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import sun.applet.Main;
 
 import java.io.IOException;
 
@@ -35,8 +35,13 @@ public class AppK3 extends Application {
             loader = createLoader("view/MainWindow.fxml");
             pane = loader.load();
             controller = (MainWindow) loader.getController();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | IllegalStateException e) {
+            //e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("There was an error trying to load the application");
+            alert.setContentText("\"" + e.getMessage() + "\"");
+            alert.showAndWait();
             primaryStage.close();
             return;
         }
