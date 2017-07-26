@@ -22,6 +22,8 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static java.lang.String.format;
+
 public class MainWindow {
 
     private TextInterpreter interpreter;
@@ -113,7 +115,7 @@ public class MainWindow {
         pane.setHgap(10);
         for (int i = 0; i < 3; i++) {
             txtLayerSizes.add(new TextField());
-            pane.addRow(i, new Label(String.format("Layer %d size:", i)), txtLayerSizes.get(i));
+            pane.addRow(i, new Label(format("Layer %d size:", i)), txtLayerSizes.get(i));
         }
 
         pane.add(new Separator(Orientation.HORIZONTAL), 0, 3, 2, 1);
@@ -151,16 +153,20 @@ public class MainWindow {
                             (s, s2) -> String.join(" ", s, s2)
                     );
                     try {
-                        interpreter.execute(cmd);
-                        interpreter.execute(String.format("set output_layer %s", choiceBox.getValue()));
+                        interpreter.execute(cmd); // "new" command
+                        interpreter.execute(format("set output_layer %s", choiceBox.getValue())); // set output layer
                         done = true;
                         updateModelDisplay();
                         showMessage("Success", "Model successfully created");
                     } catch (NoSuchElementException | IllegalArgumentException exc) {
-                        showErrorDialog("Error creating model");
+                        showErrorDialog(
+                                "Error creating model",
+                                exc.getMessage(),
+                                "This error was unexpected. Please open an issue at the GitHub repository"
+                        );
                     }
                 } else {
-                    showErrorDialog("Invalid layers size", "All field values must be positive integers");
+                    showErrorDialog("Invalid layer size", "All layers must have positive integers as sizes");
                 }
             } else {
                 done = true;
@@ -179,7 +185,11 @@ public class MainWindow {
                 interpreter.execute("save " + file.getAbsolutePath());
                 showMessage("Success", "Model saved successfully");
             } catch (IllegalArgumentException exc) {
-                showErrorDialog("Error saving model to file " + file.getAbsolutePath());
+                showErrorDialog(
+                        "Error saving model to file " + file.getAbsolutePath(),
+                        "Could not write to file " + file.getAbsolutePath(),
+                        exc.getMessage()
+                );
             }
         }
     }
@@ -194,7 +204,11 @@ public class MainWindow {
                 updateModelDisplay();
                 showMessage("Success", "Model loaded successfully");
             } catch (IllegalArgumentException exc) {
-                showErrorDialog("Error loading model from file " + file.getAbsolutePath());
+                showErrorDialog(
+                        "Error loading model from file " + file.getAbsolutePath(),
+                        "Could not load model from file " + file.getAbsolutePath(),
+                        exc.getMessage()
+                );
             }
         }
     }
@@ -215,14 +229,14 @@ public class MainWindow {
         List<TextField> txtLearningRates = new ArrayList<>();
 
         for (int i = 0; i < 3; i++) {
-            cbkTrainLayer.add(new CheckBox(String.format("Train layer %d", i)));
+            cbkTrainLayer.add(new CheckBox(format("Train layer %d", i)));
             txtLearningRates.add(new TextField(String.valueOf(interpreter.kset.getLearningRate(i))));
             Separator sep = new Separator(Orientation.VERTICAL);
 
             pane.addRow(i,
                     cbkTrainLayer.get(i),
                     sep,
-                    new Label(String.format("Learning rate for layer %d:", i)),
+                    new Label(format("Learning rate for layer %d:", i)),
                     txtLearningRates.get(i)
             );
         }
@@ -252,7 +266,7 @@ public class MainWindow {
             if (!rate.isEmpty() && checkFloat(rate, f -> f > 0)) {
                 // field not blank and valid learning rate
                 try {
-                    interpreter.execute(String.format("set learning_rate %d %s", i, rate));
+                    interpreter.execute(format("set learning_rate %d %s", i, rate));
                 } catch (IllegalArgumentException exc) {
                     showErrorDialog(exc.getMessage());
                 }
@@ -285,7 +299,7 @@ public class MainWindow {
             return;
 
         try {
-            interpreter.execute(String.format("run %s %s", inputFile.getPath(), outputFile.getPath()));
+            interpreter.execute(format("run %s %s", inputFile.getPath(), outputFile.getPath()));
         } catch (IllegalArgumentException exc) {
             showErrorDialog(exc.getMessage());
             return;
@@ -309,10 +323,16 @@ public class MainWindow {
         showErrorDialog("Error", content);
     }
 
-    private static void showErrorDialog(String title, String content) {
+    private static void showErrorDialog(String title, String header) {
+        showErrorDialog(title, header, null);
+    }
+
+    private static void showErrorDialog(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
-        alert.setHeaderText(content);
+        alert.setHeaderText(header);
+        if (content != null)
+            alert.setContentText(content);
         alert.showAndWait();
     }
 
