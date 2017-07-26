@@ -35,7 +35,7 @@ public class AppK3 extends Application {
             loader = createLoader("view/MainWindow.fxml");
             pane = loader.load();
             controller = (MainWindow) loader.getController();
-        } catch (IOException | IllegalStateException e) {
+        } catch (Exception e) {
             //e.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");

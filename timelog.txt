@@ -128,3 +128,5 @@
 24/07       30min       write on text interpreter
 
 25/07       1h          finish text interpreter section
+
+26/07       15min       Show error message when there's an error on load
