@@ -28,7 +28,7 @@ public abstract class DataIO {
 						throw new FileFormatException("Non-numeric value found in dataset");
 					}
 				}
-				
+
 				data.add(lineNum.toArray(new Double[lineNum.size()]));
 			}
 			
@@ -38,7 +38,7 @@ public abstract class DataIO {
 			for (int i = 0; iter.hasNext(); i++) {
 				Double[] row = iter.next();
 				
-				if (row.length > m[0].length)
+				if (row.length != m[0].length)
 					throw new FileFormatException("Inconsistent dataset width");
 				
 				for (int j = 0; j < row.length; j++)

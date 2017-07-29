@@ -131,3 +131,5 @@
 
 26/07       15min       show error message when there's an error on load
             40min       start error handling section
+
+29/07       30min       finish first version of the new reference file & fix minor bug

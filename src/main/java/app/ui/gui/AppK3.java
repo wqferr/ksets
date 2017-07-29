@@ -36,7 +36,6 @@ public class AppK3 extends Application {
             pane = loader.load();
             controller = (MainWindow) loader.getController();
         } catch (Exception e) {
-            //e.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText("There was an error trying to load the application");

@@ -26,6 +26,8 @@ import static java.lang.String.format;
 
 public class MainWindow {
 
+    public Button btnCreate;
+
     private TextInterpreter interpreter;
     private Stage stage;
 
@@ -62,6 +64,8 @@ public class MainWindow {
     @FXML
     private void initialize() {
         interpreter = new TextInterpreter();
+
+        Platform.runLater(btnCreate::requestFocus);
         setModelLoaded(false);
 
         modelChooser = new FileChooser();

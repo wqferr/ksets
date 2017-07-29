@@ -299,7 +299,7 @@ public class TextInterpreter {
 		try {
 			data = DataIO.read(args[0]);
 		} catch (IOException e) {
-			return e;
+			return new IllegalArgumentException(e.getMessage());
 		}
 
 		if (data[0].length != kset.getLayer(0).getSize())
