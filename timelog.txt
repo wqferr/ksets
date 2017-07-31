@@ -133,3 +133,5 @@
             40min       start error handling section
 
 29/07       30min       finish first version of the new reference file & fix minor bug
+
+31/07       10min       minor revision in reference gudie
