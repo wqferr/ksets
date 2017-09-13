@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact name="reference_pdf">
+    <output-path>$PROJECT_DIR$/out/artifacts/reference_pdf</output-path>
+    <root id="root">
+      <element id="file-copy" path="$PROJECT_DIR$/reference.pdf" />
+    </root>
+  </artifact>
+</component>

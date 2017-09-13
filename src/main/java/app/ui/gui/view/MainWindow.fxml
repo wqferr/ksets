@@ -32,7 +32,7 @@
                <font>
                   <Font size="14.0" />
                </font></Button>
-            <Button fx:id="btnHelp" mnemonicParsing="false" prefWidth="110.0" text="Help" onAction="#notImplemented">
+            <Button fx:id="btnHelp" mnemonicParsing="false" prefWidth="110.0" text="Help" onAction="#showHelp">
                <font>
                   <Font size="14.0" />
                </font></Button>

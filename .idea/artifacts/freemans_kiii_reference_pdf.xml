@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact name="freemans-kiii-reference_pdf">
-    <output-path>$PROJECT_DIR$/out/artifacts/ksets_jar</output-path>
-    <root id="root">
-      <element id="file-copy" path="$PROJECT_DIR$/freemans-kiii-reference.pdf" />
-    </root>
-  </artifact>
-</component>

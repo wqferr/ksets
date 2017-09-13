@@ -26,7 +26,7 @@ public class ODESolver implements Serializable {
 		double k3 = F(y + l2/2) * h;
 		double l3 = G(x + k2/2, y + l2/2, I) * h;
 		
-		double k4 = F(y + l2) * h;
+		double k4 = F(y + l3) * h;
 		double l4 = G(x + k3, y + l3, I) * h;
 		
 		x = x + (k1 + 2*k2 + 2*k3 + k4)/6;

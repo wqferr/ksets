@@ -1,0 +1,21 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="ksets">
+    <output-path>$PROJECT_DIR$/out/artifacts/ksets</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="app.ui.gui.AppK3" />
+        <option name="description" value="" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="title" value="Freeman's KIII" />
+        <option name="vendor" value="" />
+        <option name="version" value="" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="ksets.jar">
+        <element id="module-output" name="ksets" />
+        <element id="file-copy" path="$PROJECT_DIR$/reference.pdf" />
+      </element>
+    </root>
+  </artifact>
+</component>

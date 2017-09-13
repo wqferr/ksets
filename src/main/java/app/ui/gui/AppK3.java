@@ -20,10 +20,6 @@ public class AppK3 extends Application {
         return new FXMLLoader(getClass().getResource(path));
     }
 
-    private Pane load(String path) throws IOException {
-        return FXMLLoader.load(getClass().getResource(path));
-    }
-
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Freeman's KIII");
@@ -35,6 +31,7 @@ public class AppK3 extends Application {
             loader = createLoader("view/MainWindow.fxml");
             pane = loader.load();
             controller = (MainWindow) loader.getController();
+            controller.application = this;
         } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");

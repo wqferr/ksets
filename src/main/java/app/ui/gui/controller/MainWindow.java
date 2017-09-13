@@ -1,11 +1,17 @@
 package app.ui.gui.controller;
 
 import app.ui.text.TextInterpreter;
+import javafx.application.Application;
+import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -14,6 +20,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 
+import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +32,8 @@ import java.util.stream.Collectors;
 import static java.lang.String.format;
 
 public class MainWindow {
+
+    public Application application;
 
     public Button btnCreate;
 
@@ -89,6 +98,11 @@ public class MainWindow {
         alert.setContentText("Not implemented yet");
 
         alert.showAndWait();
+    }
+
+    @FXML
+    private void showHelp() {
+        application.getHostServices().showDocument("reference.pdf");
     }
 
     @FXML
