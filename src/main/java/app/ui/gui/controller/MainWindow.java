@@ -106,25 +106,6 @@ public class MainWindow {
     }
 
     @FXML
-    private void test() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-
-        alert.setHeaderText("0");
-
-        // dont do this, overrides buttons
-        //VBox content = new VBox();
-        //for (int i = 0; i < 5; i++)
-        //    content.getChildren().add(new Label("label " + i));
-
-        //DialogPane pane = new DialogPane();
-        //pane.setContent(content);
-
-        //alert.setDialogPane(pane);
-        alert.setContentText("1\n2\n3");
-        Optional<ButtonType> result = alert.showAndWait();
-    }
-
-    @FXML
     private void handleCreateModel() {
         GridPane pane = new GridPane();
         List<TextField> txtLayerSizes = new ArrayList<>();
