@@ -139,3 +139,5 @@
 07/08       40min       start SIICUSP document
 
 Sept        20h         SIICUSP preparations
+
+20/09       2h          v1.0
